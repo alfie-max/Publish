@@ -1,0 +1,42 @@
+
+----------------------------------- Design -----------------------------------
+
+    UI
+=========
+
+This is what the user would be exposed to
+
+1. publish.post(*args)		-> Takes in various arguments including the
+   				   Message, and the channel names and
+   				   return their response
+
+2. publish.read(channel)	-> Takes in channel name as argument, returns
+   				   the latest (fixed number of) messages from
+				   the channel
+
+3. publish.config()		-> Option for configuring the channel/app
+   				   specifics
+
+
+    HANDLER 
+===============
+
+This portion of the api would handle all the message parsing to
+different channel according to need and at the same time manage their
+responses.
+
+1. verify_auth(channel)		-> Verify if user is authenticated for the
+   				   channel and returns the response
+
+2. verify_service(channel)	-> Verify the requested service for the
+   				   channel and returns the response
+
+3. send_to(message,channel)	-> Send the message to corresponding channel
+
+
+
+      Things to Figure Out
+=================================
+
+1. How to make each channel available as a plugin (independent of
+   existing application)
