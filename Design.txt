@@ -1,8 +1,8 @@
 
 ----------------------------------- Design -----------------------------------
 
-    UI
-=========
+      User Interface
+==========================
 
 This is what the user would be exposed to
 
