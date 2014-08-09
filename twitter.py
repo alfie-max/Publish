@@ -1,6 +1,7 @@
 import os
 import tweepy
 import binascii
+import config
 
 global CON_KEY, CON_SEC, TOKEN, TOKEN_SEC
 
@@ -77,7 +78,10 @@ def Tweet(Message):
                 'USERPROFILE',
                 '')) + os.sep + '.twitter_oauth'
     
-    CON_KEY, CON_SEC, TOKEN, TOKEN_SEC = Get_Keys(keys_f)
+    if not os.path.isfile(keys_f):
+        config.Create_Key_File()
+
+    CON_KEY, CON_SEC, TOKEN, TOKEN_SEC = Get_Keys(keys_f)        
 
     if len(TOKEN) == 0 or len(TOKEN_SEC) == 0 :
         print "Token keys missing"
