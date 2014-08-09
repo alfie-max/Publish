@@ -10,6 +10,7 @@ With the help of this program you'll be able to post messages on multiple channe
 To setup the application :
 
 $ virtualenv publish
+
 $ . publish/bin/activate
 
 pip install tweepy
