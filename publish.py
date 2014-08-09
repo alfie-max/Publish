@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import twitter
 
 
 def parse_args(description='Post tweets on twitter'):
@@ -29,6 +30,6 @@ def parse_args(description='Post tweets on twitter'):
 args = parse_args()
 
 if args.twitter :
-    print args.message, ": Will be tweeted soon"
+    twitter.Tweet(args.message)
 if args.facebook :
     print "%s : This message will be posted to facebook after the api is designed" %args.message
