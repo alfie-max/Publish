@@ -1,4 +1,6 @@
-from twitter import twitter
+from twitter import Twitter
 
 Message = "Hello World"
-tweet = twitter(Message)
+tweet = Twitter(Message)
+k = tweet.GetKeys()
+print k
