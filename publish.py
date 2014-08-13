@@ -4,12 +4,8 @@ import argparse
 import twitter
 
 
-def parse_args(description='Post tweets on twitter'):
-    '''
-    
-    Parse the arguments
-
-    '''
+def parse_args():
+    ''' Parse the arguments '''
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-m', '--message',

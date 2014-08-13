@@ -10,7 +10,9 @@ class Twitter(Channel):
     def VerifyCredentials(self):
         ''' Verify Users Credentials '''
         self.GetKeys()
-        self.api = self.TwitterApi()
+        auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
+        auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
+        self.api = tweepy.API(auth)
         
         try:
             name =  self.api.me().name
@@ -28,26 +30,25 @@ class Twitter(Channel):
         self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
         self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
         
-    def TwitterApi(self):
-        '''  Create a Twitter Api Instance '''
-        auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
-        auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
-        return tweepy.API(auth)
-
     def Authorize(self):
         ''' Authorize the application with Twitter '''
         self.GetKeys()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
-        auth_url = auth.get_authorization_url()
+
+        try:
+            auth_url = auth.get_authorization_url()
+        except tweepy.error.TweepError:
+            print 'Unable to access network, Please try again later'
+            return False
 
         print "Please Authorize the application : " + auth_url
-        pin = raw_input("Enter the pin : ")
 
         ''' Request Access Token from Twitter '''
+        pin = raw_input("Enter the pin : ")
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            print e.message.msg, ', Please try again later'
+            print 'Authorization Failed, Please try again later'
             return False
         
         self.TOKEN = auth.access_token.key
