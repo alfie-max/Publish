@@ -34,7 +34,6 @@ class Twitter(Channel):
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
         return tweepy.API(auth)
 
-
     def Authorize(self):
         ''' Authorize the application with Twitter '''
         self.GetKeys()
