@@ -28,15 +28,4 @@ responses.
 1. verify_auth(channel)		-> Verify if user is authenticated for the
    				   channel and returns the response
 
-2. verify_service(channel)	-> Verify the requested service for the
-   				   channel and returns the response
-
-3. send_to(message,channel)	-> Send the message to corresponding channel
-
-
-
-      Things to Figure Out
-=================================
-
-1. How to make each channel available as a plugin (independent of
-   existing application)
+2. send_to(message,channel)	-> Send the message to corresponding channel
