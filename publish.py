@@ -6,6 +6,8 @@ import subprocess
 import tempfile
 import twitter
 
+from broadcaster import broadcast
+
 def parse_args():
     ''' Parse the arguments '''
     parser = argparse.ArgumentParser()
@@ -63,4 +65,5 @@ if args.facebook:
     if msg:
         Messages['Facebook'] = msg
 
-print Messages
+response = broadcast(Messages)
+print response

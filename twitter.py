@@ -80,10 +80,10 @@ class Twitter(Channel):
     def Tweet(self, Message):
         try:
             self.api.update_status(Message)
-            print 'Status Updated Successfully on Twitter'
+            #print 'Status Updated Successfully on Twitter'
             return True
         except tweepy.error.TweepError, e:
-            print e.message[0]['message']
+            #print e.message[0]['message']
             return False
 
     def SendMsg(self, Message):
