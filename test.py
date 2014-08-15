@@ -6,4 +6,7 @@ tweet = Twitter()
 #print tweet.VerifyCredentials()[1]
 
 #tweet.Authorize()
-tweet.SendMsg(Message)
+if tweet.SendMsg(Message):
+    pass
+else :
+    print 'Tweet Failed'

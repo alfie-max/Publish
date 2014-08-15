@@ -36,6 +36,7 @@ class Twitter(Channel):
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
 
         try:
+            print "Connecting to Twitter....."
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
             print 'Unable to access network, Please try again later'
@@ -62,17 +63,26 @@ class Twitter(Channel):
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
         
-        keys = [('Token Key', self.TOKEN), ('Token Secret', self.TOKEN_SEC)]
-        return keys
+        return True
         
+    def Tweet(self, Message):
+        try:
+            self.api.update_status(Message)
+            print 'Status Updated Successfully on Twitter'
+            return True
+        except tweepy.error.TweepError, e:
+            print e.message[0]['message']
+            return False
 
     def SendMsg(self, Message):
         ''' Sent Message to Twitter '''
         if self.VerifyCredentials():
-            try:
-                self.api.update_status(Message)
-                print 'Status Updated Successfully on Twitter'
-            except tweepy.error.TweepError, e:
-                print e.message[0]['message']
+            if self.Tweet(Message):
+                return True
         else:
-            print "Please Authorize the application with your Twitter account"
+            print "It seems you have not authorized the application with your Twitter account"
+            if self.Authorize():
+                if self.Tweet(Message):
+                    return True
+        
+        return False
