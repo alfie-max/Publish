@@ -1,5 +1,6 @@
 import ConfigParser
 import smtplib
+from getpass import getpass
 
 from channel import Channel
 from binascii import hexlify, unhexlify
@@ -36,7 +37,7 @@ class Email(Channel):
         except:
             print "Please Authenticate your Email Account"
             self.username = raw_input("Email Id : ")
-            self.password = raw_input("Password : ")
+            self.password = getpass("Password : ")
             try:
                 self.server.login(self.username, self.password)
             except:
