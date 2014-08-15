@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 
+import os
 import argparse
+import subprocess
+import tempfile
 import twitter
-
 
 def parse_args():
     ''' Parse the arguments '''
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-m', '--message',
-        type = str,
-        required = True,
-        help = 'Message to be Published')
     parser.add_argument(
         '-t','--twitter',
         action = 'store_true',
@@ -23,9 +20,47 @@ def parse_args():
     
     return parser.parse_args()
 
-args = parse_args()
+def GetMsg(filePath):
+    ''' Gets message from the User '''
+    subprocess.call('%s %s' % (os.getenv('EDITOR'), filePath), shell = True)
+    with open(filePath, 'r') as msgFile:
+        msg = ''
+        for line in msgFile.readlines():
+            line = line.strip()
+            if not line.startswith('#') and line != '':
+                msg += line + '\n'
+    return msg[:-1]
 
-if args.twitter :
-    twitter.Tweet(args.message)
-if args.facebook :
-    print "%s : This message will be posted to facebook after the api is designed" %args.message
+
+args = parse_args()
+Messages = {}
+
+if args.twitter:
+    try:
+        (fn, filePath) = tempfile.mkstemp()
+        with open(filePath, 'w') as f:
+            default = """\n# Please enter your Twitter message to be sent. Lines starting
+# with '#' will be ignored, and an empty message skips this channel."""
+            f.write(default)
+        msg = GetMsg(filePath)
+    finally:
+        os.unlink(filePath)
+
+    if msg:
+        Messages['Twitter'] = msg
+       
+if args.facebook:
+    try:
+        (fn, filePath) = tempfile.mkstemp()
+        with open(filePath, 'w') as f:
+            default = """\n# Please enter your Facebook message to be sent. Lines starting
+# with '#' will be ignored, and an empty message skips this channel."""
+            f.write(default)
+        msg = GetMsg(filePath)        
+    finally:
+        os.unlink(filePath)
+
+    if msg:
+        Messages['Facebook'] = msg
+
+print Messages
