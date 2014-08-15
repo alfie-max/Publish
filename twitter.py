@@ -18,25 +18,37 @@ class Twitter(Channel):
             name =  self.api.me().name
             return True, name
         except tweepy.error.TweepError:
-            print 'Invalid Credentials'
             return False
 
     def GetKeys(self):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
-        self.CON_KEY = unhexlify(cfg.get('Twitter', 'Consumer Key'))
-        self.CON_SEC = unhexlify(cfg.get('Twitter', 'Consumer Secret'))
-        self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
-        self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
         
+        CKEY = '3765316f446d4c436f38734d61394e78436446463468514275'
+        CSEC = '65775a364252343742573976326e4e6732474c7a397639416678516f68545665796e63676c7179776d5561506b77534e6c4c'
+
+        self.CON_KEY = unhexlify(CKEY)
+        self.CON_SEC = unhexlify(CSEC)
+        
+        if cfg.has_section('Twitter'):
+            self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
+            self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
+        else:
+            cfg.add_section('Twitter')
+            cfg.set('Twitter', 'Token Key', '')
+            cfg.set('Twitter', 'Token Secret', '')
+            with open('.publish', 'wb') as configfile:
+                cfg.write(configfile)
+
+            self.TOKEN = self.TOKEN_SEC = ''        
+
     def Authorize(self):
         ''' Authorize the application with Twitter '''
         self.GetKeys()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
 
         try:
-            print "Connecting to Twitter....."
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
             print 'Unable to access network, Please try again later'
@@ -76,11 +88,12 @@ class Twitter(Channel):
 
     def SendMsg(self, Message):
         ''' Sent Message to Twitter '''
+        
+        print 'Connecting to Twitter.....'
         if self.VerifyCredentials():
             if self.Tweet(Message):
                 return True
         else:
-            print "It seems you have not authorized the application with your Twitter account"
             if self.Authorize():
                 if self.Tweet(Message):
                     return True
