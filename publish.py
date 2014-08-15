@@ -4,9 +4,8 @@ import os
 import argparse
 import subprocess
 import tempfile
-import twitter
 
-from broadcaster import broadcast
+from modules.broadcaster import broadcast
 
 def parse_args():
     ''' Parse the arguments '''
