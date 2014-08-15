@@ -54,7 +54,7 @@ class Twitter(Channel):
             print 'Unable to access network, Please try again later'
             return False
 
-        print "Please Authorize the application : " + auth_url
+        print "Please Authorize the application with Twitter : " + auth_url
 
         ''' Request Access Token from Twitter '''
         pin = raw_input("Enter the pin : ")
@@ -88,8 +88,6 @@ class Twitter(Channel):
 
     def SendMsg(self, Message):
         ''' Sent Message to Twitter '''
-        
-        print 'Connecting to Twitter.....'
         if self.VerifyCredentials():
             if self.Tweet(Message):
                 return True

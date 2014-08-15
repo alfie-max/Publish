@@ -1,6 +1,6 @@
 class Channel(object):
     "Implements a basic Channel"
-    def SendMsg(self):
+    def SendMsg(self, Message):
         raise NotImplementedError()
 
     def Authorize(self):
