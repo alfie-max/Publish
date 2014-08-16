@@ -1,8 +1,11 @@
 import ConfigParser
 import tweepy
+import tempfile
 
+from os import unlink
 from channel import Channel
 from binascii import hexlify, unhexlify
+from PIL import Image, ImageDraw, ImageFont
 
 class Twitter(Channel):
     ''' Implements Twitter Api '''
@@ -75,15 +78,74 @@ class Twitter(Channel):
             cfg.write(configfile)
         
         return True
+
+
+    def Text2Img(self, Message):
+        ''' Creates an image containing the Message '''
+        fontname = 'modules/Secrets.ttf'
+        fontsize = 32
+        textColor = 'black'
+        bgColor = 'white'
+        maxWidth = 500
+
+        font = ImageFont.truetype(fontname, fontsize)
+        lines, width, height = self.IntelliDraw(Message, font, maxWidth)
+        imgHeight = height * len(lines)
+        img = Image.new('RGB', (width+100, imgHeight), bgColor)
+        draw = ImageDraw.Draw(img)
+
+        for i, line in enumerate(lines):
+            draw.text((25, 0 + i*height), line, font = font, fill = textColor)
+
+        filePath = tempfile.NamedTemporaryFile(suffix = '.png').name
+
+        img.save(filePath)
+        return filePath
         
+    def IntelliDraw(self, msg, font, maxWidth):
+        ''' Slices the Message and creates paragraphs '''
+        testimg = Image.new('RGB', (1024, 728))
+        drawer = ImageDraw.Draw(testimg)
+        words = msg.split()
+        lines = []
+        lines.append(words)
+        finished = False
+        line = 0
+        while not finished:
+            thistext = lines[line]
+            newline = []
+            innerFinished = False
+            while not innerFinished:
+                if drawer.textsize(' '.join(thistext) ,font)[0] > maxWidth:
+                    newline.insert(0, thistext.pop(-1))
+                else:
+                    innerFinished = True
+            if len(newline) > 0:
+                lines.append(newline)
+                line = line + 1
+            else:
+                finished = True
+        tmp = []
+        for i in lines:
+            tmp.append( ' '.join(i) )
+        lines = tmp
+        (width, height) = drawer.textsize(lines[0], font)
+        return (lines, width, height)
+
     def Tweet(self, Message):
         try:
             self.api.update_status(Message)
-            #print 'Status Updated Successfully on Twitter'
             return True
         except tweepy.error.TweepError, e:
-            #print e.message[0]['message']
-            return False
+            Image = self.Text2Img(Message)
+            try:
+                self.api.update_with_media(Image)
+                unlink(Image)
+                return True
+            except tweepy.error.TweepError:
+                unlink(Image)
+                return False
+
 
     def SendMsg(self, Message):
         ''' Sent Message to Twitter '''
