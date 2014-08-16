@@ -45,7 +45,6 @@ class Twitter(Channel):
 
     def Authorize(self):
         ''' Authorize the application with Twitter '''
-        self.GetKeys()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
 
         try:
@@ -93,7 +92,8 @@ class Twitter(Channel):
                 return True
         else:
             if self.Authorize():
-                if self.Tweet(Message):
-                    return True
+                if self.VerifyCredentials():
+                    if self.Tweet(Message):
+                        return True
         
         return False

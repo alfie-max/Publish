@@ -5,6 +5,7 @@ from getpass import getpass
 from channel import Channel
 from binascii import hexlify, unhexlify
 
+
 class Email(Channel):
     ''' Implements an Email Api '''
     def SetupServer(self):

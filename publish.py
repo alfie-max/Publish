@@ -18,6 +18,10 @@ def parse_args():
         '-fb','--facebook',
         action = 'store_true',
         help = 'Send to Facebook')
+    parser.add_argument(
+        '-e','--email',
+        action = 'store_true',
+        help = 'Send an E-mail')
     
     return parser.parse_args()
 
@@ -63,6 +67,9 @@ if args.facebook:
 
     if msg:
         Messages['Facebook'] = msg
+
+if args.email:
+    pass
 
 response = broadcast(Messages)
 print response
