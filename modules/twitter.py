@@ -82,15 +82,15 @@ class Twitter(Channel):
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
-        fontname = 'modules/Secrets.ttf'
-        fontsize = 32
+        fontname = 'modules/Tahoma.ttf'
+        fontsize = 22
         textColor = 'black'
         bgColor = 'white'
         maxWidth = 500
 
         font = ImageFont.truetype(fontname, fontsize)
         lines, width, height = self.IntelliDraw(Message, font, maxWidth)
-        imgHeight = height * len(lines)
+        imgHeight = height * len(lines) + 10
         img = Image.new('RGB', (width+100, imgHeight), bgColor)
         draw = ImageDraw.Draw(img)
 
