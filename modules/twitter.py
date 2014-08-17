@@ -84,18 +84,18 @@ class Twitter(Channel):
         ''' Creates an image containing the Message '''
         fontname = 'modules/Tahoma.ttf'
         fontsize = 22
-        textColor = 'black'
+        textColor = (102,117,127)
         bgColor = 'white'
         maxWidth = 500
 
         font = ImageFont.truetype(fontname, fontsize)
         lines, width, height = self.IntelliDraw(Message, font, maxWidth)
-        imgHeight = height * len(lines) + 10
-        img = Image.new('RGB', (width+100, imgHeight), bgColor)
+        imgHeight = (height +10) * len(lines)
+        img = Image.new('RGB', (width + 35, imgHeight), bgColor)
         draw = ImageDraw.Draw(img)
 
         for i, line in enumerate(lines):
-            draw.text((25, 0 + i*height), line, font = font, fill = textColor)
+            draw.text((10, 0 + i*(height+10)), line, font = font, fill = textColor)
 
         filePath = tempfile.NamedTemporaryFile(suffix = '.png').name
 
