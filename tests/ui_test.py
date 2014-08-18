@@ -37,21 +37,21 @@ def pass_args(args):
         parser.print_help()
         #sys.exit(1)  --> Ignored due to test fail
     args = parser.parse_args(args.split())
-    
+    channels = []
     if args.twitter:
-        print "Its twitter time :)"
+        channels.append('Twitter')
 
     (fn, cfgFile) = tempfile.mkstemp()
     (fn, cfgSpec) = tempfile.mkstemp()
 
-    Add_Field('Message', 'string', cfgFile, cfgSpec)
-    subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
-
-
-    if Validate(cfgFile, cfgSpec) != True:
-        print "Input file validation failed"
-        #sys.exit(1)  --> Ignored due to test fail
-
+    if len(channels) != 0:
+        Add_Field('Message', 'string', cfgFile, cfgSpec)
+        subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
+        if Validate(cfgFile, cfgSpec) != True:
+            print "Input file validation failed"
+            #sys.exit(1)  --> Ignored due to test fail
+        else:
+            print cfgFile, channels
 
 
 pass_args('-t')

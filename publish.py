@@ -31,6 +31,7 @@ def Parse_Args():
     return parser.parse_args()
 
 def Add_Field(field, fieldType, cfgFile, cfgSpec):
+    """ Adds a field into config file """
     config = ConfigObj(cfgFile)
     config[field] = ''
     config.write()
@@ -40,6 +41,7 @@ def Add_Field(field, fieldType, cfgFile, cfgSpec):
     spec.write()
 
 def Validate(cfgFile, cfgSpec):
+    """ Validates the config file content types """
     config = ConfigObj(cfgFile, configspec = cfgSpec)
     validator = Validator()
     result = config.validate(validator)
@@ -47,17 +49,22 @@ def Validate(cfgFile, cfgSpec):
 
 
 """ Here program starts execution """
+
+channels = [] # stores channel list
+(fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
+(fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
 args = Parse_Args()
-(fn, cfgFile) = tempfile.mkstemp()
-(fn, cfgSpec) = tempfile.mkstemp()
 
+""" Check each args """
 if args.twitter:
-    print "Its twitter time :)"
+    channels.append('Twitter')
 
-Add_Field('Message', 'string', cfgFile, cfgSpec)
-subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
-
-
-if Validate(cfgFile, cfgSpec) != True:
-    print "Input file validation failed"
-    sys.exit(1)
+""" Ask user input """
+if len(channels) != 0 :
+    Add_Field('Message', 'string', cfgFile, cfgSpec)
+    subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
+    if Validate(cfgFile, cfgSpec) != True:
+        print "Input file validation failed"
+        sys.exit(1)
+    else:
+        print cfgFile, channels
