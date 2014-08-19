@@ -8,6 +8,7 @@ import subprocess
 
 from configobj import ConfigObj
 from validate import Validator
+from dispacher import dispatch
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
     """ Overrides argparse error function and
@@ -67,4 +68,4 @@ if len(channels) != 0 :
         print "Input file validation failed"
         sys.exit(1)
     else:
-        print cfgFile, channels
+        dispatch(channels, cfgFile)
