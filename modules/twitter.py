@@ -69,6 +69,8 @@ class Twitter(Channel):
         ''' Update Config file with Token Keys '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
+        if not cfg.has_section('Twitter'):
+            cfg.add_section('Twitter')
         cfg.set('Twitter', 'Token Key', hexlify(self.TOKEN))
         cfg.set('Twitter', 'Token Secret', hexlify(self.TOKEN_SEC))
         with open('.publish', 'wb') as configfile:
