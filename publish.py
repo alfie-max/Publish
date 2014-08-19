@@ -59,7 +59,6 @@ def Validate_ConfigFile(cfgFile, cfgSpec):
     validator = Validator()
     result = config.validate(validator)
     os.unlink(cfgSpec)
-    print result
     return result
 
 
