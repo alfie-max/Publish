@@ -68,4 +68,4 @@ if len(channels) != 0 :
         print "Input file validation failed"
         sys.exit(1)
     else:
-        dispatch(channels, cfgFile)
+        reply = dispatch(channels, cfgFile)
