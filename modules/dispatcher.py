@@ -16,3 +16,10 @@ def Dispatch(channels, msgFile):
             reply['Twitter'] = chObj.SendMsg(Message)
             
     return reply
+
+def Authenticate(channel):
+    if channel == 'Twitter':
+        chObj = Twitter()
+        reply = chObj.Authorize()
+        return reply
+    
