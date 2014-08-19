@@ -90,7 +90,7 @@ class Email(Channel):
                     toAddr = toAddr.strip()
                     mail = self.ComposeMail(Subject, toAddr, Message)
                     try:
-                        self.server.sendmail(fromAddr, toAddr, Message)
+                        self.server.sendmail(fromAddr, toAddr, mail)
                         reply[toAddr] = 'Success'
                     except:
                         reply[toAddr] = 'Failed'
