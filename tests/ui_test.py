@@ -4,6 +4,7 @@ import tempfile
 import subprocess
 from configobj import ConfigObj
 from validate import Validator
+from engine_dummy import dispatch
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
     def error(self, message):
@@ -51,7 +52,7 @@ def pass_args(args):
             print "Input file validation failed"
             #sys.exit(1)  --> Ignored due to test fail
         else:
-            print cfgFile, channels
+            dispatch(channels, cfgFile)
 
 
 pass_args('-t')
