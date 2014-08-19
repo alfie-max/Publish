@@ -8,6 +8,7 @@ import subprocess
 
 from configobj import ConfigObj
 from validate import Validator
+from termcolor import colored
 from modules.dispatcher import Dispatch, Authenticate
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
@@ -35,10 +36,10 @@ def Parse_Args():
 
     return parser.parse_args()
 
-def Add_Field(field, fieldType, cfgFile, cfgSpec):
+def Add_Field(field, value, fieldType, cfgFile, cfgSpec):
     """ Adds a field into config file """
-    config = ConfigObj(cfgFile)
-    config[field] = ''
+    config = ConfigObj(cfgFile, write_empty_values = True)
+    config[field] = value
     config.write()
 
     spec = ConfigObj(cfgSpec)
@@ -47,7 +48,10 @@ def Add_Field(field, fieldType, cfgFile, cfgSpec):
 
 def Validate_ConfigFile(cfgFile, cfgSpec):
     """ Validates the config file content types """
-    config = ConfigObj(cfgFile, configspec = cfgSpec)
+    try:
+        config = ConfigObj(cfgFile, configspec = cfgSpec)
+    except:
+        return False
     validator = Validator()
     result = config.validate(validator)
     os.unlink(cfgSpec)
@@ -72,13 +76,21 @@ if args.twitter:
 
 """ Ask user input """
 if len(channels) != 0 :
-    Add_Field('Topic', 'string', cfgFile, cfgSpec)
-    Add_Field('To_Email', 'string_list', cfgFile, cfgSpec)
-    Add_Field('Message', 'string', cfgFile, cfgSpec)
+    Add_Field('Message', '', 'string', cfgFile, cfgSpec)
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
     if Validate_ConfigFile(cfgFile, cfgSpec) != True:
-        print "Input file validation failed"
+        print colored('Input file validation failed','red')
         os.unlink(cfgFile)
         sys.exit(1)
     else:
+        msgConfig = ConfigObj(cfgFile)
+        Message = msgConfig['Message']
+        if len(Message) == 0:
+            print colored('Empty message string', 'red')
+            exit(1)
+
         reply = Dispatch(channels, cfgFile)
+        print "          Message sent Summary          "
+        print "----------------------------------------"
+        for key in reply:
+            print " %s : %s"%(key, reply[key])
