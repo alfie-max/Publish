@@ -86,6 +86,7 @@ class Email(Channel):
                 fromAddr = self.username
                 reply = {}
                 for toAddr in toAddrs:
+                    toAddr = toAddr.strip()
                     mail = ComposeMail(Subject, toAddr, Message)
                     try:
                         self.server.sendmail(fromAddr, toAddr, Message)
