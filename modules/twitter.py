@@ -5,6 +5,7 @@ import tempfile
 from os import unlink
 from consumer import *
 from channel import Channel
+from termcolor import colored
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
 
@@ -51,7 +52,7 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            return 'Unable to access network, Please try again later'
+            return colored('Unable to access network, Please try again later', 'red')
 
         print "Please Authorize the application with Twitter : " + auth_url
 
@@ -60,7 +61,7 @@ class Twitter(Channel):
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            return 'Authorization Failed, Please try again later'
+            return colored('Authorization Failed, Please try again later', 'red')
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
@@ -74,9 +75,9 @@ class Twitter(Channel):
             cfg.write(configfile)
         
         if self.VerifyCredentials():
-            return "Authentication Successful"
+            return colored('Authentication Successful', 'green')
         else:
-            return "Authentication Failed"
+            return colored('Authentication Failed', 'red')
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
@@ -149,8 +150,8 @@ class Twitter(Channel):
         ''' Sent Message to Twitter '''
         if self.VerifyCredentials():
             if self.Tweet(Message):
-                return "Message sent successfully"
+                return colored('Message sent successfully', 'green')
             else:
-                return "Message sending failed"
+                return colored('Message sending failed', 'red')
         else:
-            return "Verification failed"
+            return colored('Verification failed', 'red')
