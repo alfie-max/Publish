@@ -4,17 +4,15 @@ from twitter import Twitter
 
 def Dispatch(channels, msgFile):
     msgConfig = ConfigObj(msgFile)
-    Topic = msgConfig['Topic']
-    To_Email = msgConfig['To_Email']
     Message = msgConfig['Message']
-    unlink(msgFile)
 
     reply = {}
     for channel in channels:
         if channel == 'Twitter':
             chObj = Twitter()
             reply['Twitter'] = chObj.SendMsg(Message)
-            
+
+    unlink(msgFile)            
     return reply
 
 def Authenticate(channel):
