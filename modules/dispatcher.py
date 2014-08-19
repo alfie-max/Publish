@@ -13,4 +13,4 @@ def Dispatch(channels, msgFile):
             chObj = Twitter()
             reply['Twitter'] = chObj.SendMsg(Message)
             
-    print reply
+    return reply
