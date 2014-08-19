@@ -8,7 +8,7 @@ import subprocess
 
 from configobj import ConfigObj
 from validate import Validator
-from modules.dispatcher import Dispatch
+from modules.dispatcher import Dispatch, Authenticate
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
     """ Overrides argparse error function and
@@ -24,6 +24,10 @@ def Parse_Args():
         '-t','--twitter',
         action = 'store_true',
         help = 'Send to twitter')
+    parser.add_argument(
+        '-tauth','--twitter-auth',
+        action = 'store_true',
+        help = 'Authenticate twitter account')
 
     if len(sys.argv)==1:
         parser.print_help()
@@ -58,8 +62,13 @@ channels = [] # stores channel list
 args = Parse_Args()
 
 """ Check each args """
+if args.twitter_auth:
+    reply = Authenticate('Twitter')
+    print reply
+    sys.exit(0)
 if args.twitter:
     channels.append('Twitter')
+    
 
 """ Ask user input """
 if len(channels) != 0 :
