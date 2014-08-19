@@ -46,6 +46,7 @@ def Validate(cfgFile, cfgSpec):
     config = ConfigObj(cfgFile, configspec = cfgSpec)
     validator = Validator()
     result = config.validate(validator)
+    os.unlink(cfgSpec)
     return result
 
 
@@ -66,6 +67,8 @@ if len(channels) != 0 :
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
     if Validate(cfgFile, cfgSpec) != True:
         print "Input file validation failed"
+        os.unlink(cfgFile)
         sys.exit(1)
     else:
         reply = Dispatch(channels, cfgFile)
+        
