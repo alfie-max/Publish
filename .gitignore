@@ -60,3 +60,4 @@ docs/_build/
 
 # Project Config File
 .publish
+consumer.py
