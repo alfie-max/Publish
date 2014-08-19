@@ -3,13 +3,17 @@ import tweepy
 import tempfile
 
 from os import unlink
+from consumer import *
 from channel import Channel
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
 
 class Twitter(Channel):
     ''' Implements Twitter Api '''
-
+    def __init__(self):
+        self.CON_KEY = unhexlify(CKEY)
+        self.CON_SEC = unhexlify(CSEC)
+        
     def VerifyCredentials(self):
         ''' Verify Users Credentials '''
         self.GetKeys()
@@ -18,8 +22,8 @@ class Twitter(Channel):
         self.api = tweepy.API(auth)
         
         try:
-            name =  self.api.me().name
-            return True, name
+            self.api.me()
+            return True
         except tweepy.error.TweepError:
             return False
 
@@ -27,12 +31,6 @@ class Twitter(Channel):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
-        
-        CKEY = '3765316f446d4c436f38734d61394e78436446463468514275'
-        CSEC = '65775a364252343742573976326e4e6732474c7a397639416678516f68545665796e63676c7179776d5561506b77534e6c4c'
-
-        self.CON_KEY = unhexlify(CKEY)
-        self.CON_SEC = unhexlify(CSEC)
         
         if cfg.has_section('Twitter'):
             self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
@@ -53,8 +51,7 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            print 'Unable to access network, Please try again later'
-            return False
+            return 'Unable to access network, Please try again later'
 
         print "Please Authorize the application with Twitter : " + auth_url
 
@@ -63,8 +60,7 @@ class Twitter(Channel):
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            print 'Authorization Failed, Please try again later'
-            return False
+            return 'Authorization Failed, Please try again later'
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
@@ -77,8 +73,10 @@ class Twitter(Channel):
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
         
-        return True
-
+        if self.VerifyCredentials():
+            return "Authentiaction Successful"
+        else:
+            return "Authentication Failed"
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
@@ -151,11 +149,8 @@ class Twitter(Channel):
         ''' Sent Message to Twitter '''
         if self.VerifyCredentials():
             if self.Tweet(Message):
-                return True
+                return "Message sent successfully"
+            else:
+                return "Message sending failed"
         else:
-            if self.Authorize():
-                if self.VerifyCredentials():
-                    if self.Tweet(Message):
-                        return True
-        
-        return False
+            return "Verification failed"
