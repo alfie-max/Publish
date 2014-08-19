@@ -24,15 +24,19 @@ def Parse_Args():
     parser.add_argument(
         '-t','--twitter',
         action = 'store_true',
-        help = 'Send to twitter')
+        help = 'Send message to twitter')
     parser.add_argument(
         '-e','--email',
         action = 'store_true',
-        help = 'Send an Email')
+        help = 'Send message via Email')
     parser.add_argument(
         '-tauth','--twitter-auth',
         action = 'store_true',
         help = 'Authenticate twitter account')
+    parser.add_argument(
+        '-eauth','--email-auth',
+        action = 'store_true',
+        help = 'Authenticate email account')
 
     if len(sys.argv)==1:
         parser.print_help()
@@ -74,6 +78,11 @@ if args.twitter_auth:
     reply = Authenticate('Twitter')
     print reply
     sys.exit(0)
+if args.email_auth:
+    reply = Authenticate('Email')
+    print reply
+    sys.exit(0)
+
 if args.twitter:
     channels.append('Twitter')
 if args.email:

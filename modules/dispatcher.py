@@ -26,4 +26,8 @@ def Authenticate(channel):
         chObj = Twitter()
         reply = chObj.Authorize()
         return reply
+    if channel == 'Email':
+        chObj = Email()
+        reply = chObj.Authorize()
+        return reply
     

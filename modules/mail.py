@@ -38,6 +38,7 @@ class Email(Channel):
                 
     def VerifyCredentials(self):
         """ Tries to login with available login info """
+        self.SetupServer()
         self.GetAuthInfo()
         try:
             self.server.login(self.username, self.password)
@@ -87,12 +88,12 @@ class Email(Channel):
                 reply = {}
                 for toAddr in toAddrs:
                     toAddr = toAddr.strip()
-                    mail = ComposeMail(Subject, toAddr, Message)
+                    mail = self.ComposeMail(Subject, toAddr, Message)
                     try:
                         self.server.sendmail(fromAddr, toAddr, Message)
-                        reply[toAddr] = colored('Success', 'green')
+                        reply[toAddr] = 'Success'
                     except:
-                        reply[toAddr] = colored('Failed', 'red')
+                        reply[toAddr] = 'Failed'
                 return reply
             else:
                 return colored('Authentication failed', 'red')
