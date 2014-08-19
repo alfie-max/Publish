@@ -26,6 +26,10 @@ def Parse_Args():
         action = 'store_true',
         help = 'Send to twitter')
     parser.add_argument(
+        '-e','--email',
+        action = 'store_true',
+        help = 'Send an Email')
+    parser.add_argument(
         '-tauth','--twitter-auth',
         action = 'store_true',
         help = 'Authenticate twitter account')
@@ -55,6 +59,7 @@ def Validate_ConfigFile(cfgFile, cfgSpec):
     validator = Validator()
     result = config.validate(validator)
     os.unlink(cfgSpec)
+    print result
     return result
 
 
@@ -72,6 +77,10 @@ if args.twitter_auth:
     sys.exit(0)
 if args.twitter:
     channels.append('Twitter')
+if args.email:
+    channels.append('Email')
+    Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
+    Add_Field('To_Email', '', 'string', cfgFile, cfgSpec)
     
 
 """ Ask user input """
