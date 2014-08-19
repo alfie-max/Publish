@@ -1,6 +1,6 @@
 from os import unlink
 from configobj import ConfigObj
-from tests.ch_mock import Twitter
+from twitter import Twitter
 
 def Dispatch(channels, msgFile):
     msgConfig = ConfigObj(msgFile)
