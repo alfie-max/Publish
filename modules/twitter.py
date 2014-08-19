@@ -74,7 +74,7 @@ class Twitter(Channel):
             cfg.write(configfile)
         
         if self.VerifyCredentials():
-            return "Authentiaction Successful"
+            return "Authentication Successful"
         else:
             return "Authentication Failed"
 
