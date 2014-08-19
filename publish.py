@@ -8,7 +8,7 @@ import subprocess
 
 from configobj import ConfigObj
 from validate import Validator
-from dispacher import Dispatch
+from modules.dispatcher import Dispatch
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
     """ Overrides argparse error function and
@@ -63,6 +63,8 @@ if args.twitter:
 
 """ Ask user input """
 if len(channels) != 0 :
+    Add_Field('Topic', 'string', cfgFile, cfgSpec)
+    Add_Field('To_Email', 'string_list', cfgFile, cfgSpec)
     Add_Field('Message', 'string', cfgFile, cfgSpec)
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
     if Validate(cfgFile, cfgSpec) != True:
