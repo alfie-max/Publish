@@ -41,7 +41,7 @@ def Add_Field(field, fieldType, cfgFile, cfgSpec):
     spec[field] = fieldType
     spec.write()
 
-def Validate(cfgFile, cfgSpec):
+def Validate_ConfigFile(cfgFile, cfgSpec):
     """ Validates the config file content types """
     config = ConfigObj(cfgFile, configspec = cfgSpec)
     validator = Validator()
@@ -67,10 +67,9 @@ if len(channels) != 0 :
     Add_Field('To_Email', 'string_list', cfgFile, cfgSpec)
     Add_Field('Message', 'string', cfgFile, cfgSpec)
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
-    if Validate(cfgFile, cfgSpec) != True:
+    if Validate_ConfigFile(cfgFile, cfgSpec) != True:
         print "Input file validation failed"
         os.unlink(cfgFile)
         sys.exit(1)
     else:
         reply = Dispatch(channels, cfgFile)
-        
