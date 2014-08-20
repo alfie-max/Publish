@@ -102,7 +102,7 @@ if len(channels) != 0 :
     else:
         msgConfig = ConfigObj(cfgFile)
         Message = msgConfig['Message']
-        if len(Message) == 0:
+        if len(Message.strip()) == 0:
             print colored('Empty message string', 'red')
             exit(1)
 
