@@ -13,10 +13,12 @@ def Dispatch(channels, msgFile):
             chObj = Twitter()
             reply['Twitter'] = chObj.SendMsg(Message)
         if channel == 'Email':
-            Subject = msgConfig['Topic']
-            To_Email = msgConfig['To_Email']
+            mail = {}
+            mail['Subject'] = msgConfig['Topic']
+            mail['To_Email'] = msgConfig['To_Email']
+            mail['Message'] = msgConfig['Message']
             chObj = Email()
-            reply['Email'] = chObj.SendMsg(Subject, To_Email, Message)
+            reply['Email'] = chObj.SendMsg(mail)
 
     unlink(msgFile)            
     return reply

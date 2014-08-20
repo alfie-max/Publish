@@ -78,8 +78,11 @@ class Email(Channel):
 
 
 
-    def SendMsg(self, Subject, To_Email, Message):
+    def SendMsg(self, Mail):
         """ Send mail to given addresses """
+        Subject = Mail['Subject']
+        To_Email = Mail['To_Email']
+        Message = Mail['Message']
         toAddrs = To_Email.split(',')
 
         if self.SetupServer():
