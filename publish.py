@@ -73,16 +73,23 @@ channels = [] # stores channel list
 (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
 args = Parse_Args()
 
-""" Check each args """
+""" Check for authentication request """
+auth = False
 if args.twitter_auth:
     reply = Authenticate('Twitter')
     print reply
-    sys.exit(0)
+    auth = True
 if args.email_auth:
     reply = Authenticate('Email')
     print reply
+    auth = True
+
+""" Exit if any auth took place """
+if auth:
     sys.exit(0)
 
+
+""" Check for message publish request """
 if args.twitter:
     channels.append('Twitter')
 if args.email:
@@ -90,7 +97,6 @@ if args.email:
     Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
     Add_Field('To_Email', '', 'string', cfgFile, cfgSpec)
     
-
 """ Ask user input """
 if len(channels) != 0 :
     Add_Field('Message', '', 'string', cfgFile, cfgSpec)
