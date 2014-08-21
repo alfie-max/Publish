@@ -135,13 +135,19 @@ if len(channels) != 0 :
         os.unlink(cfgFile)
         sys.exit(1)
     else:
+        reply = {}
         msgConfig = ConfigObj(cfgFile)
         Message = msgConfig['Message']
         if len(Message.strip()) == 0:
-            print colored('Empty message string', 'red')
+            print colored('Empty message field', 'red')
             exit(1)
+        if args.blog:
+            Topic = msgConfig['Topic']
+            if len(Topic.strip()) == 0:
+                reply['Blog'] = colored('Empty topic field', 'red')
+                channels.remove('Blog')
 
-        reply = Dispatch(channels, cfgFile)
+        reply.update(Dispatch(channels, cfgFile))
         print "          Message sent Summary          "
         print "----------------------------------------"
         for key in reply:
