@@ -24,15 +24,31 @@ def Parse_Args():
     parser.add_argument(
         '-t','--twitter',
         action = 'store_true',
-        help = 'Send message to twitter')
+        help = 'Post message on Twitter')
+    parser.add_argument(
+        '-fb','--facebook',
+        action = 'store_true',
+        help = 'Post message on Facebook')
+    parser.add_argument(
+        '-b','--blog',
+        action = 'store_true',
+        help = 'Post message on Blog')
     parser.add_argument(
         '-e','--email',
         action = 'store_true',
-        help = 'Send message via Email')
+        help = 'Sent message via Email')
     parser.add_argument(
         '-tauth','--twitter-auth',
         action = 'store_true',
         help = 'Authenticate twitter account')
+    parser.add_argument(
+        '-fauth','--facebook-auth',
+        action = 'store_true',
+        help = 'Authenticate facebook account')
+    parser.add_argument(
+        '-bauth','--blog-auth',
+        action = 'store_true',
+        help = 'Authenticate blog account')
     parser.add_argument(
         '-eauth','--email-auth',
         action = 'store_true',
@@ -79,6 +95,14 @@ if args.twitter_auth:
     reply = Authenticate('Twitter')
     print reply
     auth = True
+if args.facebook_auth:
+    reply = Authenticate('Facebook')
+    print reply
+    auth = True
+if args.blog_auth:
+    reply = Authenticate('Blog')
+    print reply
+    auth = True
 if args.email_auth:
     reply = Authenticate('Email')
     print reply
@@ -92,6 +116,11 @@ if auth:
 """ Check for message publish request """
 if args.twitter:
     channels.append('Twitter')
+if args.facebook:
+    channels.append('Facebook')
+if args.blog:
+    channels.append('Blog')
+    Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
 if args.email:
     channels.append('Email')
     Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
