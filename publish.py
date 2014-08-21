@@ -123,7 +123,7 @@ if args.blog:
     Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
 if args.email:
     channels.append('Email')
-    Add_Field('Topic', '', 'string', cfgFile, cfgSpec)
+    Add_Field('Subject', '', 'string', cfgFile, cfgSpec)
     Add_Field('To_Email', '', 'string', cfgFile, cfgSpec)
     
 """ Ask user input """

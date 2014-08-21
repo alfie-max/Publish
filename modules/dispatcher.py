@@ -14,7 +14,7 @@ def Dispatch(channels, msgFile):
             reply['Twitter'] = chObj.SendMsg(Message)
         if channel == 'Email':
             mail = {}
-            mail['Subject'] = msgConfig['Topic']
+            mail['Subject'] = msgConfig['Subject']
             mail['To_Email'] = msgConfig['To_Email']
             mail['Message'] = msgConfig['Message']
             chObj = Email()
