@@ -2,7 +2,7 @@ import ConfigParser
 import smtplib
 
 from getpass import getpass
-from channel import Channel
+from ..modules.channel import Channel
 from termcolor import colored
 from binascii import hexlify, unhexlify
 from email.MIMEText import MIMEText
@@ -102,3 +102,6 @@ class Email(Channel):
                 return colored('Authentication failed', 'red')
         else:
             return colored('Unable to access mail server', 'red')
+
+
+__plugin__ = 'email'

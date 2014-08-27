@@ -18,3 +18,5 @@ tags = ["sometag", "othertag"]
 data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
 
 post_id = server.metaWeblog.newPost(wp_blogid, wp_username, wp_password, data, status_published)
+
+__plugin__ = 'wordpress'

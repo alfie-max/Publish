@@ -3,8 +3,8 @@ import tweepy
 import tempfile
 
 from os import unlink
-from consumer import *
-from channel import Channel
+from ..modules.consumer import *
+from ..modules.channel import Channel
 from termcolor import colored
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
@@ -157,3 +157,5 @@ class Twitter(Channel):
                 return colored('Message sending failed', 'red')
         else:
             return colored('Verification failed', 'red')
+
+__plugin__ = 'twitter'
