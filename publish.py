@@ -6,7 +6,7 @@ import argparse
 import tempfile
 import subprocess
 
-from engine import get_plugins
+from modules.engine import get_plugins
 from configobj import ConfigObj
 from validate import Validator
 from termcolor import colored
@@ -39,13 +39,18 @@ def parse_args(args):
 def main(args):
     plugins = get_plugins()
     channels = []
+    fields = []
     args = parse_args(args)._get_kwargs()
     for arg in args:
         if arg[1] and arg[0] in plugins:
+            fields.extend(plugins[arg[0]].__fields__)
             channels.append(arg[0])
-    print channels
-    
-        
+    fields = list(set(fields))
+    if 'Message' in fields:
+        fields.remove('Message')
+        fields.append('Message')
+
+    print fields
 
 if __name__ == '__main__':
     import sys
