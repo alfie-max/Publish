@@ -57,8 +57,9 @@ def validate_configfile(cfgFile, cfgSpec):
     return result
 
 def main(args):
-    fields = []
+    field_list = []
     channels = []
+    fields = {}
     plugins = get_plugins()
     args = parse_args(args)._get_kwargs()
 
@@ -67,20 +68,23 @@ def main(args):
 
     for arg in args:
         if arg[1] and arg[0] in plugins:
-            fields.extend(plugins[arg[0]].__fields__)
+            field_list.extend(plugins[arg[0]].__fields__)
             channels.append(arg[0])
     
     if len(channels) != 0 :
-        fields = list(set(fields))
-        if 'Message' in fields:
-            fields.remove('Message')
-            fields.append('Message')
-        for field in fields:
+        field_list = list(set(field_list))
+        if 'Message' in field_list:
+            field_list.remove('Message')
+            field_list.append('Message')
+        for field in field_list:
             add_field(field, 'string', cfgFile, cfgSpec)
 
         subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
         if validate_configfile(cfgFile, cfgSpec):
-            print 'validated'
+            config = ConfigObj(cfgFile)
+            for field in field_list:
+                fields[field] = config[field]
+            print fields
         else:
             print colored('Input file validation failed','red')
             os.unlink(cfgFile)
