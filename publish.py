@@ -6,7 +6,7 @@ import argparse
 import tempfile
 import subprocess
 
-from modules.engine import get_plugins
+from modules.engine import get_plugins, dispatch
 from configobj import ConfigObj, ConfigObjError
 from validate import Validator
 from termcolor import colored
@@ -84,7 +84,13 @@ def main(args):
             config = ConfigObj(cfgFile)
             for field in field_list:
                 fields[field] = config[field]
-            print fields
+            for i in plugins:
+                plugin = plugins[i]
+                if plugin.verify_credentials():
+                    pass
+                else:
+                    plugin.authorize()
+            dispatch(channels, fields)
         else:
             print colored('Input file validation failed','red')
             os.unlink(cfgFile)

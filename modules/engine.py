@@ -13,10 +13,13 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
         name, ext = splitext(basename(plugin_file))
         module_name = "plugins.{}".format(name)
         module = importlib.import_module(module_name)
-        plugins[module.__plugin__] = module
+        plugin = module.__plugin__()
+        plugins[module.__cname__] = plugin
 
     return plugins
 
+def dispatch(channels, fields):
+    pass
 
 if __name__ == '__main__':
     main()
