@@ -7,7 +7,7 @@ import tempfile
 import subprocess
 
 from modules.engine import get_plugins
-from configobj import ConfigObj
+from configobj import ConfigObj, ConfigObjError
 from validate import Validator
 from termcolor import colored
 
@@ -35,23 +35,57 @@ def parse_args(args):
 
     return parser.parse_args(args)
 
+def add_field(field, fieldType, cfgFile, cfgSpec):
+    """ Adds a field into config file """
+    config = ConfigObj(cfgFile, write_empty_values = True)
+    config[field] = ''
+    config.write()
+
+    spec = ConfigObj(cfgSpec)
+    spec[field] = fieldType
+    spec.write()
+
+def validate_configfile(cfgFile, cfgSpec):
+    """ Validates the config file content types """
+    try:
+        config = ConfigObj(cfgFile, configspec = cfgSpec)
+    except ConfigObjError:
+        return False
+    validator = Validator()
+    result = config.validate(validator)
+    os.unlink(cfgSpec)
+    return result
 
 def main(args):
-    plugins = get_plugins()
-    channels = []
     fields = []
+    channels = []
+    plugins = get_plugins()
     args = parse_args(args)._get_kwargs()
+
+    (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
+    (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
+
     for arg in args:
         if arg[1] and arg[0] in plugins:
             fields.extend(plugins[arg[0]].__fields__)
             channels.append(arg[0])
-    fields = list(set(fields))
-    if 'Message' in fields:
-        fields.remove('Message')
-        fields.append('Message')
+    
+    if len(channels) != 0 :
+        fields = list(set(fields))
+        if 'Message' in fields:
+            fields.remove('Message')
+            fields.append('Message')
+        for field in fields:
+            add_field(field, 'string', cfgFile, cfgSpec)
 
-    print fields
-
+        subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
+        if validate_configfile(cfgFile, cfgSpec):
+            print 'validated'
+        else:
+            print colored('Input file validation failed','red')
+            os.unlink(cfgFile)
+            sys.exit(1)
+    
 if __name__ == '__main__':
     import sys
     main(sys.argv[1:])
