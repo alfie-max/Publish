@@ -159,12 +159,9 @@ class Twitter(Channel):
     def SendMsg(self, msg):
         ''' Sent Message to Twitter '''
         Message = msg['Message']
-        if self.VerifyCredentials():
-            if self.Tweet(Message):
-                return {'Twitter':'Message Sent'}
-            else:
-                return {'Twitter':'Message Sending Failed'}
+        if self.Tweet(Message):
+            return {'Twitter':'Message Sent'}
         else:
-            return {'Twitter':'Verification Failed'}
+            return {'Twitter':'Message Sending Failed'}
 
 __plugin__ = Twitter
