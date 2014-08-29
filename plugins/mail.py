@@ -2,15 +2,20 @@ import ConfigParser
 import smtplib
 
 from getpass import getpass
-from ..modules.channel import Channel
+from modules.exception import *
+from modules.channel import Channel
 from termcolor import colored
 from binascii import hexlify, unhexlify
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 
+__cname__ = 'email'
 
 class Email(Channel):
     ''' Implements an Email Api '''
+    def __init__(self):
+        self.__fields__ = ['Subject', 'To_Email', 'Message']
+
     def SetupServer(self):
         """ Setup the mail server """
         try:
@@ -18,7 +23,7 @@ class Email(Channel):
             self.server.ehlo()
             self.server.starttls()
             return True
-        except:
+        except smtplib.SMTPException:
             return False
 
     def GetAuthInfo(self):
@@ -43,7 +48,7 @@ class Email(Channel):
         try:
             self.server.login(self.username, self.password)
             return True
-        except:
+        except smtplib.SMTPException:
             return False
 
     def ComposeMail(self, Subject, toAddr, Message):
@@ -71,37 +76,31 @@ class Email(Channel):
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
 
-        if self.VerifyCredentials():
-            return colored('Authentication Successful', 'green')
-        else:
-            return colored('Authentication Failed', 'red')
-
-
+        if not self.VerifyCredentials():
+            raise AuthorizationError(__cname__)
 
     def SendMsg(self, Mail):
         """ Send mail to given addresses """
         Subject = Mail['Subject']
         To_Email = Mail['To_Email']
         Message = Mail['Message']
-        toAddrs = To_Email.split(',')
+        if isinstance(To_Email,str):
+            To_Email = [To_Email]
 
         if self.SetupServer():
-            if self.VerifyCredentials():
-                fromAddr = self.username
-                reply = {}
-                for toAddr in toAddrs:
-                    toAddr = toAddr.strip()
-                    mail = self.ComposeMail(Subject, toAddr, Message)
-                    try:
-                        self.server.sendmail(fromAddr, toAddr, mail)
-                        reply[toAddr] = 'Success'
-                    except:
-                        reply[toAddr] = 'Failed'
-                return reply
-            else:
-                return colored('Authentication failed', 'red')
+            fromAddr = self.username
+            response = {}
+            for toAddr in To_Email:
+                toAddr = toAddr.strip()
+                mail = self.ComposeMail(Subject, toAddr, Message)
+                try:
+                    self.server.sendmail(fromAddr, toAddr, mail)
+                    response[toAddr] = 'Mail Sent'
+                except:
+                    response[toAddr] = 'Mail Sending Failed'
+            return response
         else:
-            return colored('Unable to access mail server', 'red')
+            raise Failed({'Email':'Unable to access Mail Server'})
 
 
-__plugin__ = 'email'
+__plugin__ = Email

@@ -1,19 +1,24 @@
+import os
 import ConfigParser
 import tweepy
 import tempfile
+import webbrowser
 
-from os import unlink
-from ..modules.consumer import *
-from ..modules.channel import Channel
 from termcolor import colored
+from modules.consumer import *
+from modules.exception import *
+from modules.channel import Channel
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
+
+__cname__ = 'twitter'
 
 class Twitter(Channel):
     ''' Implements Twitter Api '''
     def __init__(self):
         self.CON_KEY = unhexlify(CKEY)
         self.CON_SEC = unhexlify(CSEC)
+        self.__fields__ = ['Message']
         
     def VerifyCredentials(self):
         ''' Verify Users Credentials '''
@@ -52,16 +57,22 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            return colored('Unable to access network, Please try again later', 'red')
-
-        print "Please Authorize the application with Twitter : " + auth_url
+            raise Failed('Twitter : Unable to access network')
 
         ''' Request Access Token from Twitter '''
+        savout = os.dup(1)
+        os.close(1)
+        os.open(os.devnull, os.O_RDWR)
+        try:
+            webbrowser.open(auth_url)
+        finally:
+            os.dup2(savout, 1)
+
         pin = raw_input("Enter the pin : ")
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            return colored('Authorization Failed, Please try again later', 'red')
+            raise AuthorizationError(__cname__)
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
@@ -76,14 +87,12 @@ class Twitter(Channel):
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
         
-        if self.VerifyCredentials():
-            return colored('Authentication Successful', 'green')
-        else:
-            return colored('Authentication Failed', 'red')
+        if not self.VerifyCredentials():
+            raise AuthorizationError(__cname__)
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
-        fontname = 'modules/Tahoma.ttf'
+        fontname = 'plugins/Tahoma.ttf'
         fontsize = 22
         textColor = (102,117,127)
         bgColor = 'white'
@@ -141,21 +150,21 @@ class Twitter(Channel):
             Image = self.Text2Img(Message)
             try:
                 self.api.update_with_media(Image)
-                unlink(Image)
+                os.unlink(Image)
                 return True
             except tweepy.error.TweepError:
-                unlink(Image)
+                os.unlink(Image)
                 return False
 
-
-    def SendMsg(self, Message):
+    def SendMsg(self, msg):
         ''' Sent Message to Twitter '''
+        Message = msg['Message']
         if self.VerifyCredentials():
             if self.Tweet(Message):
-                return colored('Message sent successfully', 'green')
+                return {'Twitter':'Message Sent'}
             else:
-                return colored('Message sending failed', 'red')
+                return {'Twitter':'Message Sending Failed'}
         else:
-            return colored('Verification failed', 'red')
+            return {'Twitter':'Verification Failed'}
 
-__plugin__ = 'twitter'
+__plugin__ = Twitter
