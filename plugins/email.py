@@ -26,7 +26,7 @@ class Email(Channel):
         except smtplib.SMTPException:
             return False
 
-    def GetAuthInfo(self):
+    def GetKeys(self):
         """ Read user login info from file """
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -44,7 +44,7 @@ class Email(Channel):
     def VerifyCredentials(self):
         """ Tries to login with available login info """
         self.SetupServer()
-        self.GetAuthInfo()
+        self.GetKeys()
         try:
             self.server.login(self.username, self.password)
             return True
@@ -100,7 +100,7 @@ class Email(Channel):
                     response[toAddr] = 'Mail Sending Failed'
             return response
         else:
-            raise Failed({'Email':'Unable to access Mail Server'})
+            return {'Email':'Unable to access Mail Server'}
 
 
 __plugin__ = Email
