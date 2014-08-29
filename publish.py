@@ -6,6 +6,7 @@ import argparse
 import tempfile
 import subprocess
 
+from modules.exception import *
 from modules.engine import get_plugins, dispatch
 from configobj import ConfigObj, ConfigObjError
 from validate import Validator
@@ -71,7 +72,7 @@ def main(args):
             field_list.extend(plugins[arg[0]].__fields__)
             channels.append(arg[0])
     
-    if len(channels) != 0 :
+    if len(channels) != 0:
         field_list = list(set(field_list))
         if 'Message' in field_list:
             field_list.remove('Message')
@@ -84,13 +85,19 @@ def main(args):
             config = ConfigObj(cfgFile)
             for field in field_list:
                 fields[field] = config[field]
-            for i in plugins:
-                plugin = plugins[i]
-                if plugin.verify_credentials():
-                    pass
-                else:
-                    plugin.authorize()
-            dispatch(channels, fields)
+            for channel in plugins:
+                if channel in channels:
+                    plugin = plugins[channel]
+                    if not plugin.VerifyCredentials():
+                        try:
+                            plugin.Authorize()
+                        except AuthorizationError, e:
+                            print e.message, ': Authorization Failed'
+                            channels.remove(channel)
+            if len(channels) != 0:
+                print "Sending...."
+                response = dispatch(channels, fields)
+                print response
         else:
             print colored('Input file validation failed','red')
             os.unlink(cfgFile)
