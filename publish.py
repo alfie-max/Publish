@@ -56,44 +56,52 @@ def validate_configfile(cfgFile, cfgSpec):
     os.unlink(cfgSpec)
     return result
 
-def main(args):
-    field_list = []
+def get_fields_channels(plugins, args):
     channels = []
-    fields = {}
-    plugins = get_plugins()
-    args = parse_args(args)._get_kwargs()
-
-    (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
-    (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
-
+    field_list = []
     for arg in args:
         if arg[1] and arg[0] in plugins:
             field_list.extend(plugins[arg[0]].__fields__)
             channels.append(arg[0])
-    
-    if len(channels) != 0:
-        field_list = list(set(field_list))
-        if 'Message' in field_list:
-            field_list.remove('Message')
-            field_list.append('Message')
-        for field in field_list:
-            add_field(field, 'string', cfgFile, cfgSpec)
+    field_list = list(set(field_list))
+    if 'Message' in field_list:
+        field_list.remove('Message')
+        field_list.append('Message')
+        
+    return field_list, channels
 
-        subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
-        if validate_configfile(cfgFile, cfgSpec):
-            config = ConfigObj(cfgFile)
-            for field in field_list:
-                fields[field] = config[field]
-            response = {}
-            for channel in plugins:
-                if channel in channels:
-                    plugin = plugins[channel]
-                    response.update(dispatch(plugin, fields))
-            print response
-        else:
-            print 'Input file validation failed'
-            os.unlink(cfgFile)
-            sys.exit(1)
+def main(args):
+    fields = {}
+    plugins = get_plugins()
+    args = parse_args(args)._get_kwargs()
+
+    field_list, channels = get_fields_channels(plugins, args)
+
+    if len(channels) == 0:
+        return
+
+    (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
+    (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
+
+    for field in field_list:
+        add_field(field, 'string', cfgFile, cfgSpec)
+
+    subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
+    if validate_configfile(cfgFile, cfgSpec):
+        config = ConfigObj(cfgFile)
+        for field in field_list:
+            fields[field] = config[field]
+        responses = {}
+        for channel in plugins:
+            if channel in channels:
+                plugin = plugins[channel]
+                responses.update(dispatch(plugin, fields))
+        for channel, response in responses.iteritems():
+            print "{:<25} {:<25}".format(channel, response)
+    else:
+        print 'Input file validation failed'
+        os.unlink(cfgFile)
+        sys.exit(1)
     
 if __name__ == '__main__':
     import sys
