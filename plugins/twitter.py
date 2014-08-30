@@ -158,6 +158,15 @@ class Twitter(Channel):
     def SendMsg(self, msg):
         ''' Sent Message to Twitter '''
         Message = msg['Message']
+        Message = Message.strip()
+        if len(Message) == 0:
+            return {'Twitter':'Empty Message String'}
+
+        self.GetAuthInfo()
+        auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
+        auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
+        self.api = tweepy.API(auth)
+        
         if self.Tweet(Message):
             return {'Twitter':'Message Sent'}
         else:

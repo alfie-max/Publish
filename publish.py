@@ -85,6 +85,8 @@ def main(args):
             config = ConfigObj(cfgFile)
             for field in field_list:
                 fields[field] = config[field]
+
+            print "Authenticating...."
             for channel in plugins:
                 if channel in channels:
                     plugin = plugins[channel]
@@ -94,6 +96,7 @@ def main(args):
                         except AuthorizationError, e:
                             print e.message, ': Authorization Failed'
                             channels.remove(channel)
+
             if len(channels) != 0:
                 print "Sending...."
                 response = dispatch(channels, fields)

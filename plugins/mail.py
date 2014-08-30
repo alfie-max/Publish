@@ -87,6 +87,11 @@ class Email(Channel):
             To_Email = [To_Email]
 
         if self.SetupServer():
+            self.GetAuthInfo()
+            try:
+                self.server.login(self.username, self.password)
+            except smtplib.SMTPException:
+                return {'Email':'Login Failed'}
             fromAddr = self.username
             response = {}
             for toAddr in To_Email:
