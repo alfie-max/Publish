@@ -23,7 +23,7 @@ def dispatch(plugin, fields):
     if not plugin.VerifyCredentials():
         try:
             plugin.Authorize()
-        except (AuthorizarionError, Failed), e:
+        except (AuthorizationError, Failed), e:
             return e.message
 
     req_fields_list = plugin.__fields__
