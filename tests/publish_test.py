@@ -3,6 +3,7 @@ import argparse
 import tempfile
 import os
 from configobj import ConfigObj
+import mock_engine
 
 def test_known_args():
     publish.parse_args(['--twitter'])
@@ -25,3 +26,7 @@ def test_validate_config():
     publish.add_field('Message', 'string', cfgFile, cfgSpec)
     publish.validate_configfile(cfgFile, cfgSpec)
 
+def test_get_fields_channels():
+    plugins = mock_engine.get_plugins()
+    args = [('twitter', True),('facebook', True)]
+    publish.get_fields_channels(plugins, args)
