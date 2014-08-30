@@ -10,7 +10,6 @@ from modules.exception import *
 from modules.engine import get_plugins, dispatch
 from configobj import ConfigObj, ConfigObjError
 from validate import Validator
-from termcolor import colored
 
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
@@ -85,27 +84,18 @@ def main(args):
             config = ConfigObj(cfgFile)
             for field in field_list:
                 fields[field] = config[field]
-
-            print "Authenticating...."
+            response = {}
             for channel in plugins:
                 if channel in channels:
                     plugin = plugins[channel]
-                    if not plugin.VerifyCredentials():
-                        try:
-                            plugin.Authorize()
-                        except AuthorizationError, e:
-                            print e.message, ': Authorization Failed'
-                            channels.remove(channel)
-
-            if len(channels) != 0:
-                print "Sending...."
-                response = dispatch(channels, fields)
-                print response
+                    response.update(dispatch(plugin, fields))
+            print response
         else:
-            print colored('Input file validation failed','red')
+            print 'Input file validation failed'
             os.unlink(cfgFile)
             sys.exit(1)
     
 if __name__ == '__main__':
     import sys
     main(sys.argv[1:])
+

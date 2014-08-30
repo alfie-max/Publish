@@ -4,7 +4,6 @@ import tweepy
 import tempfile
 import webbrowser
 
-from termcolor import colored
 from modules.consumer import *
 from modules.exception import *
 from modules.channel import Channel
@@ -56,7 +55,7 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            raise Failed('Twitter : Unable to access network')
+            raise Failed({'Twitter':'Unable to access network'})
 
         ''' Request Access Token from Twitter '''
         savout = os.dup(1)
@@ -87,7 +86,7 @@ class Twitter(Channel):
             cfg.write(configfile)
         
         if not self.VerifyCredentials():
-            raise AuthorizationError(__cname__)
+            raise AuthorizationError({'Twitter':'Authorization Failed'})
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
@@ -161,7 +160,6 @@ class Twitter(Channel):
         Message = Message.strip()
         if len(Message) == 0:
             return {'Twitter':'Empty Message String'}
-
         self.GetAuthInfo()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)

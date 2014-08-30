@@ -4,7 +4,6 @@ import smtplib
 from getpass import getpass
 from modules.exception import *
 from modules.channel import Channel
-from termcolor import colored
 from binascii import hexlify, unhexlify
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
