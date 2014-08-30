@@ -11,7 +11,6 @@ from modules.channel import Channel
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
 
-__cname__ = 'twitter'
 
 class Twitter(Channel):
     ''' Implements Twitter Api '''
@@ -22,7 +21,7 @@ class Twitter(Channel):
         
     def VerifyCredentials(self):
         ''' Verify Users Credentials '''
-        self.GetKeys()
+        self.GetAuthInfo()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
         self.api = tweepy.API(auth)
@@ -33,7 +32,7 @@ class Twitter(Channel):
         except tweepy.error.TweepError:
             return False
 
-    def GetKeys(self):
+    def GetAuthInfo(self):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -165,3 +164,4 @@ class Twitter(Channel):
             return {'Twitter':'Message Sending Failed'}
 
 __plugin__ = Twitter
+__cname__ = 'twitter'

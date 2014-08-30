@@ -9,7 +9,6 @@ from binascii import hexlify, unhexlify
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 
-__cname__ = 'email'
 
 class Email(Channel):
     ''' Implements an Email Api '''
@@ -26,7 +25,7 @@ class Email(Channel):
         except smtplib.SMTPException:
             return False
 
-    def GetKeys(self):
+    def GetAuthInfo(self):
         """ Read user login info from file """
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -44,7 +43,7 @@ class Email(Channel):
     def VerifyCredentials(self):
         """ Tries to login with available login info """
         self.SetupServer()
-        self.GetKeys()
+        self.GetAuthInfo()
         try:
             self.server.login(self.username, self.password)
             return True
@@ -104,3 +103,4 @@ class Email(Channel):
 
 
 __plugin__ = Email
+__cname__ = 'email'
