@@ -81,10 +81,14 @@ class Email(Channel):
         """ Send mail to given addresses """
         Subject = Mail['Subject']
         To_Email = Mail['To_Email']
-        Message = Mail['Message']
         if isinstance(To_Email,str):
-            To_Email = [To_Email]
+            To_Email = To_Email.split(',')
+        Message = Mail['Message']
+        Message = Message.strip()
 
+        if len(Message) == 0:
+            return {'Email':'Empty Message String'}
+        
         if self.SetupServer():
             self.GetAuthInfo()
             try:
