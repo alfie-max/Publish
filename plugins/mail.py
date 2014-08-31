@@ -77,6 +77,14 @@ class Email(Channel):
         if not self.VerifyCredentials():
             raise AuthorizationError(__cname__)
 
+    def VerifyFields(self, Mail):
+        Message = Mail['Message']
+        Message = Message.strip()
+        if len(Message) != 0:
+            return True
+        else:
+            return False
+
     def SendMsg(self, Mail):
         """ Send mail to given addresses """
         Subject = Mail['Subject']
@@ -85,9 +93,6 @@ class Email(Channel):
             To_Email = To_Email.split(',')
         Message = Mail['Message']
         Message = Message.strip()
-
-        if len(Message) == 0:
-            return {'Email':'Empty Message String'}
         
         if self.SetupServer():
             self.GetAuthInfo()

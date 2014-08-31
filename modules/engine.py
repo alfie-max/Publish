@@ -22,7 +22,7 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
 def dispatch(plugin, fields):
     if not plugin.VerifyFields(fields):
         module = importlib.import_module(plugin.__module__)
-        return {module.__cname__ : 'Invalid Fields'}
+        return {module.__cname__.title() : 'Invalid Fields'}
     if not plugin.VerifyCredentials():
         try:
             plugin.Authorize()

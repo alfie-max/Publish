@@ -154,12 +154,19 @@ class Twitter(Channel):
                 os.unlink(Image)
                 return False
 
+    def VerifyFields(self, msg):
+        Message = msg['Message']
+        Message = Message.strip()
+        if len(Message) != 0:
+            return True
+        else:
+            return False
+
     def SendMsg(self, msg):
         ''' Sent Message to Twitter '''
         Message = msg['Message']
         Message = Message.strip()
-        if len(Message) == 0:
-            return {'Twitter':'Empty Message String'}
+
         self.GetAuthInfo()
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
