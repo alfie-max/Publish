@@ -20,6 +20,9 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
     return plugins
 
 def dispatch(plugin, fields):
+    if not plugin.VerifyFields(fields):
+        module = importlib.import_module(plugin.__module__)
+        return {module.__cname__ : 'Invalid Fields'}
     if not plugin.VerifyCredentials():
         try:
             plugin.Authorize()
