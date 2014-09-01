@@ -1,5 +1,4 @@
 import datetime, xmlrpclib
-import ..... 
 from modules.channel import Channel
 from exception import *
 
@@ -22,9 +21,10 @@ data = {'title': title, 'description': content, 'categories': categories, 'mt_ke
 post_id = server.metaWeblog.newPost(wp_blogid, wp_username, wp_password, data, status_published)
 
  
-__cname__ = "wordpress"      #or whichever channel
+__cname__ = "blog"      #or whichever channel
  
-class Wordpress(Channel):
+class Blog(Channel):
+        ''' Implements an Blog Api '''
         def __init__(self):
                 self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
  
