@@ -4,11 +4,11 @@ import ..... # what ever needed
 from modules.channel import Channel
 from exception import *
  
-__cname__ = "wordpress"      #or whichever channel
+__cname__ = "facebook"      #or whichever channel
  
-class Wordpress(Channel):
+class Facebook(Channel):
         def __init__(self):
-                self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
+                self.__fields__ = ["Message"]   # and whatever the plugin requires for sending a message
  
         def VerifyCredentials(self):
                 # this method should check if the auth info available in the .publish file valid
