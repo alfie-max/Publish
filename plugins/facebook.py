@@ -83,7 +83,7 @@ class Facebook(Channel):
 
         if not self.VerifyCredentials():
             raise AuthorizationError(__cname__)
-            
+
         def VerifyFields(self, fields):
         Message = Facebook['Message']
         Message = Message.strip()
@@ -93,17 +93,11 @@ class Facebook(Channel):
             return False
  
         def SendMsg(self, Message):
-                # Message: this is a dictionary in the format
-                # {field1:value, field2:value, ...}
-                # and here do what is necessary to send message to this channel
-                # finally return message like
-                # return {'Wordpress':'Blog posted'}
-                # return {'Wordpress':'Blog posting failed'}
-                # return {'Wordpress':'Unable to access network/server'}
-                # u get the idea right.... should return a dict
-                # with key as the channel name and value as the message to be returned
- 
-        # add whichever other methods you want to create
+        try:
+        fb_response = facebook_graph.put_wall_post(Message,profile_id  = self.profileid )
+        print fb_response
+        except facebook.GraphAPIError as e:
+        print 'Something went wrong:', e.type, e.message
  
 # and after declaring the class
 __plugin__ = Facebook  # the channel name
