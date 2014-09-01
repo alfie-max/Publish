@@ -60,6 +60,9 @@ class Email(Channel):
         self.username = raw_input("Email Id : ")
         self.password = getpass("Password : ")
         
+        if not self.VerifyCredentials():
+            raise AuthorizationError({'Email':'Authorization Failed'})
+
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -69,9 +72,6 @@ class Email(Channel):
         cfg.set('Email', 'Password', hexlify(self.password))
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
-
-        if not self.VerifyCredentials():
-            raise AuthorizationError(__cname__)
 
     def VerifyFields(self, Mail):
         Message = Mail['Message']
