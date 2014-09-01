@@ -34,12 +34,24 @@ class Facebook(Channel):
            # self.URL = self.USER = ''        
 
         def VerifyCredentials(self):
-                # this method should check if the auth info available in the .publish file valid
-                # and return True if it checks out and false if it fails
+        oauth_args = dict(client_id     = self.appid,
+                  client_secret = self.appsecret,
+                  grant_type    = 'client_credentials')
+        oauth_curl_cmd = ['curl',
+                  'https://graph.facebook.com/oauth/access_token?' + urllib.urlencode(oauth_args)]
+        oauth_response = subprocess.Popen(oauth_curl_cmd,
+                                  stdout = subprocess.PIPE,
+                                  stderr = subprocess.PIPE).communicate()[0]
  
+        try:
+        oauth_access_token = urlparse.parse_qs(str(oauth_response))['access_token'] [0]  
+        except KeyError:
+                return False
+
+
         def GetKeys(self):
-                # You can look at this function from any other plugin, u'll just need to make a few changes
-                # which are channel specific
+        
+        facebook_graph = facebook.GraphAPI(oauth_access_token)
  
         def Authorize(self):
                 # here ask user for authentication info and save it in the .publish file
