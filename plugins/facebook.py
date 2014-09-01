@@ -63,6 +63,26 @@ class Facebook(Channel):
                 # i.e raise the AuthorizationError exception and pass a dict with channel name as key
                 # and value as the message to be returned to ui
        
+         """ Get Facebook authentication data """
+        print "Please Authenticate your Facebook Account"
+        self.appid= raw_input("Enter your Facebook APP ID ")
+        self.appsecret  = getpass("App Secret : ")
+        self.profileid = raw_input("Profile ID : ")
+        
+
+        ''' Update Config file with User login Info '''
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        if not cfg.has_section('Facebook'):
+            cfg.add_section('Facebook')
+        cfg.set('Facebook', 'App ID', self.appid)
+        cfg.set('Facebook', 'App Secret', hexlify(self.appsecret))
+        cfg.set('Facebook', 'Password', self.profileid)
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)
+
+        if not self.VerifyCredentials():
+            raise AuthorizationError(__cname__)
         def VerifyFields(self, fields):
                 # fields parameter passed is a dictionary of the format :
                 # {field1:value, field2:value, ...}
