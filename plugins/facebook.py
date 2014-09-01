@@ -83,12 +83,14 @@ class Facebook(Channel):
 
         if not self.VerifyCredentials():
             raise AuthorizationError(__cname__)
+            
         def VerifyFields(self, fields):
-                # fields parameter passed is a dictionary of the format :
-                # {field1:value, field2:value, ...}
-                # here the plugin required fields are checked if they are valid
-                # returns True/False
-                # for eg: checks if the message passed is empty or not
+        Message = Facebook['Message']
+        Message = Message.strip()
+        if len(Message) != 0:
+            return True
+        else:
+            return False
  
         def SendMsg(self, Message):
                 # Message: this is a dictionary in the format
