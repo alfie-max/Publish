@@ -8,13 +8,11 @@ from modules.channel import Channel
 from modules.exception import *
 from binascii import hexlify, unhexlify
 
-
 class Blog(Channel):
-        ''' Implements an Blog Api '''
-        def __init__(self):
-                self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
- 
-        def GetAuthInfo(self):
+    ''' Implements a Blog Api '''
+    def __init__(self):
+        self.__fields__ = ["Message","Title"]    
+    def GetAuthInfo(self):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -30,18 +28,17 @@ class Blog(Channel):
             cfg.set('Blog', 'Username', '')
             cfg.set('Blog', 'Password', '')
             with open('.publish', 'wb') as configfile:
-                cfg.write(configfile)
+                cfg.write(configfile) 
 
-           # self.URL = self.USER = ''        
-
-
-
-        def VerifyCredentials(self):
-         ''' Tries to access the given URL exists '''       
-                self.GetAuthInfo()
-                try: urllib.urlopen(self.url)
-                except IOError: return False
-                return True
+    def VerifyCredentials(self):
+        ''' Tries to access the given URL exists '''       
+        self.GetAuthInfo()
+        try: 
+            server = xmlrpclib.ServerProxy(self.url)
+            server.metaWeblog.getRecentPosts('', self.username, self.password)
+            return True
+        except (IOError, xmlrpclib.Fault):
+            return False
 
         
  
