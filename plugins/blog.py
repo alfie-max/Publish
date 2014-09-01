@@ -1,6 +1,7 @@
 import datetime, xmlrpclib
 from modules.channel import Channel
 from exception import *
+from binascii import hexlify, unhexlify
 
 wp_url = "http://students.thelycaeum.in/blog/xmlrpc.php"
 wp_username = "beingshahul"
@@ -36,17 +37,22 @@ class Blog(Channel):
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
-        if cfg.has_section('Twitter'):
-            self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
-            self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
+        if cfg.has_section('Blog'):
+            self.URL = unhexlify(cfg.get('Blog', 'URL'))
+            self.USER = unhexlify(cfg.get('Blog', 'Username'))
+            self.PWD = unhexlify(cfg.get('Blog', 'Password'))
+            self.BID = unhexlify(cfg.get('Blog', 'Blog ID'))
         else:
-            cfg.add_section('Twitter')
-            cfg.set('Twitter', 'Token Key', '')
-            cfg.set('Twitter', 'Token Secret', '')
+            cfg.add_section('Blog')
+            cfg.set('Blog', 'URL', '')
+            cfg.set('Blog', 'Username', '')
+            cfg.set('Blog', 'Password', '')
+            cfg.set('Blog', 'ID', '')
+            
             with open('.publish', 'wb') as configfile:
                 cfg.write(configfile)
 
-            self.TOKEN = self.TOKEN_SEC = ''        
+           # self.URL = self.USER = ''        
 
  
         def GetKeys(self):
