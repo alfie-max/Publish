@@ -12,7 +12,27 @@ class Facebook(Channel):
         ''' Implements Facebook Api '''
         def __init__(self):
                 self.__fields__ = ["Message"]   # and whatever the plugin requires for sending a message
- 
+        
+        def GetAuthInfo(self):
+        ''' Read Keys from Config file '''
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        
+        if cfg.has_section('Facebook'):
+            self.appid = cfg.get('Facebook', 'Application ID')
+            self.appsecret = unhexlify(cfg.get('Facebook', 'App Secret'))
+            self.profileid = cfg.get('Facebook', 'Profile ID')
+            
+        else:
+            cfg.add_section('Facebook')
+            cfg.set('Facebook', 'Application ID', '')
+            cfg.set('Facebook', 'App Secret', '')
+            cfg.set('Facebook', 'Profile ID', '')
+            with open('.publish', 'wb') as configfile:
+                cfg.write(configfile)
+
+           # self.URL = self.USER = ''        
+
         def VerifyCredentials(self):
                 # this method should check if the auth info available in the .publish file valid
                 # and return True if it checks out and false if it fails
