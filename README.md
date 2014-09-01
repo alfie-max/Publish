@@ -1,7 +1,10 @@
 publish
 =======
 
-Publish is a program to broadcast an announcement on multiple social media channels (like twitter, facebook, email, etc)
+Publish app makes the life of netizens a lot easier. It provides a unique solution which removes the duplication of effort needed to post the same content in multiple social networks.
 
-This particular program comes really handy.
-With the help of this program you'll be able to post messages on multiple channels with ease.
+Developers
+-------------
+
+Alfred
+Shahul 
