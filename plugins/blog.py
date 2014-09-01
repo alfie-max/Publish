@@ -1,6 +1,11 @@
-import datetime, xmlrpclib
+import urllib
+import datetime
+import xmlrpclib
+import ConfigParser
+
+from getpass import getpass
 from modules.channel import Channel
-from exception import *
+from modules.exception import *
 from binascii import hexlify, unhexlify
 
 
