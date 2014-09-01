@@ -38,25 +38,10 @@ class Blog(Channel):
             server.metaWeblog.getRecentPosts('', self.username, self.password)
             return True
         except (IOError, xmlrpclib.Fault):
-            return False
-
-        
- 
-        def GetKeys(self):
-                # You can look at this function from any other plugin, u'll just need to make a few changes
-                # which are channel specific
- 
-        def Authorize(self):
-                # here ask user for authentication info and save it in the .publish file
-                # how to do that can be seen if u look at any existing plugins
-                # Finally after saving the auth info
-                # call VerifyCredentials and check if the given info is worth it
-                # if it fails do :
-                # raise AuthorizationError({'Wordpress':'Authorization Failed'})
-                # i.e raise the AuthorizationError exception and pass a dict with channel name as key
-                # and value as the message to be returned to ui
-
-        """ Get user blog authentication data """
+            return False       
+    
+    def Authorize(self):
+        ''' Get user blog authentication data '''
         print "Please Authenticate your Blog Account"
         self.url = raw_input("Blog URL : ")
         self.username = raw_input("Username : ")
@@ -74,9 +59,9 @@ class Blog(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError(__cname__)
+            raise AuthorizationError({'Blog':'Authorization Failed'})
        
-        def VerifyFields(self, Blog):
+    def VerifyFields(self, Blog):
         Message = Blog['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -84,18 +69,16 @@ class Blog(Channel):
         else:
             return False
  
-        def SendMsg(self, Blog):
-        status_draft = 0
-        status_published = 1
+    def SendMsg(self, Blog):
         blogid = ""
-
-        server = xmlrpclib.ServerProxy(self.url)
-
+        status_published = 1
         title = Blog['Title']
         content = Blog['Message']
+        data = {'title': title, 'description': content}
+        
 
-        categories = ["Uncategorized"]
-        tags = ["sometag", "othertag"]
+        self.GetAuthInfo()      
+        
         data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
 
         post_id = server.metaWeblog.newPost(blogid, self.username, hexlify(self.password), data, status_published)
