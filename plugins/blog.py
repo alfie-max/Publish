@@ -3,13 +3,7 @@ from modules.channel import Channel
 from exception import *
 from binascii import hexlify, unhexlify
 
-url = "http://students.thelycaeum.in/blog/xmlrpc.php"
-wp_username = "beingshahul"
-wp_password = "n9EDcoT9JuSs"
-wp_blogid = ""
 
-
- 
 class Blog(Channel):
         ''' Implements an Blog Api '''
         def __init__(self):
@@ -91,8 +85,9 @@ class Blog(Channel):
         def SendMsg(self, Blog):
         status_draft = 0
         status_published = 1
+        blogid = ""
 
-        server = xmlrpclib.ServerProxy(url)
+        server = xmlrpclib.ServerProxy(self.url)
 
         title = Blog['Title']
         content = Blog['Message']
@@ -101,7 +96,7 @@ class Blog(Channel):
         tags = ["sometag", "othertag"]
         data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
 
-        post_id = server.metaWeblog.newPost(wp_blogid, wp_username, wp_password, data, status_published)
+        post_id = server.metaWeblog.newPost(blogid, self.username, exlify(self.password), data, status_published)
 
 
 
