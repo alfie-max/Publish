@@ -96,7 +96,7 @@ class Blog(Channel):
         tags = ["sometag", "othertag"]
         data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
 
-        post_id = server.metaWeblog.newPost(blogid, self.username, exlify(self.password), data, status_published)
+        post_id = server.metaWeblog.newPost(blogid, self.username, hexlify(self.password), data, status_published)
 
 
 
