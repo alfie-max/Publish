@@ -29,35 +29,36 @@ class Blog(Channel):
         def __init__(self):
                 self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
  
-        def VerifyCredentials(self):
-         ''' Tries to access the given URL exists '''       
-                self.GetAuthInfo()
-                try: urllib.urlopen(self.URL)
-                except IOError: return False
-                return True
-
         def GetAuthInfo(self):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
         if cfg.has_section('Blog'):
-            self.URL = unhexlify(cfg.get('Blog', 'URL'))
-            self.USER = unhexlify(cfg.get('Blog', 'Username'))
-            self.PWD = unhexlify(cfg.get('Blog', 'Password'))
-            self.BID = unhexlify(cfg.get('Blog', 'Blog ID'))
+            self.url = cfg.get('Blog', 'URL')
+            self.username = cfg.get('Blog', 'Username')
+            self.password = unhexlify(cfg.get('Blog', 'Password'))
+            
         else:
             cfg.add_section('Blog')
             cfg.set('Blog', 'URL', '')
             cfg.set('Blog', 'Username', '')
             cfg.set('Blog', 'Password', '')
-            cfg.set('Blog', 'ID', '')
-            
             with open('.publish', 'wb') as configfile:
                 cfg.write(configfile)
 
            # self.URL = self.USER = ''        
 
+
+
+        def VerifyCredentials(self):
+         ''' Tries to access the given URL exists '''       
+                self.GetAuthInfo()
+                try: urllib.urlopen(self.url)
+                except IOError: return False
+                return True
+
+        
  
         def GetKeys(self):
                 # You can look at this function from any other plugin, u'll just need to make a few changes
@@ -72,6 +73,26 @@ class Blog(Channel):
                 # raise AuthorizationError({'Wordpress':'Authorization Failed'})
                 # i.e raise the AuthorizationError exception and pass a dict with channel name as key
                 # and value as the message to be returned to ui
+
+        """ Get user blog authentication data """
+        print "Please Authenticate your Blog Account"
+        self.url = raw_input("Blog URL : ")
+        self.username = raw_input("Username : ")
+        self.password = getpass("Password : ")
+
+        ''' Update Config file with User login Info '''
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        if not cfg.has_section('Blog'):
+            cfg.add_section('Blog')
+        cfg.set('Blog', 'URL', self.url)
+        cfg.set('Blog', 'Username', self.username)
+        cfg.set('Blog', 'Password', hexlify(self.password))
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)
+
+        if not self.VerifyCredentials():
+            raise AuthorizationError(__cname__)
        
         def VerifyFields(self, fields):
                 # fields parameter passed is a dictionary of the format :
