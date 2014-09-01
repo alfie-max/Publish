@@ -1,12 +1,12 @@
-import ..... # what ever needed
- 
+
 #you will need to import these
 from modules.channel import Channel
 from exception import *
  
-__cname__ = "facebook"      #or whichever channel
+
  
 class Facebook(Channel):
+        ''' Implements Facebook Api '''
         def __init__(self):
                 self.__fields__ = ["Message"]   # and whatever the plugin requires for sending a message
  
@@ -49,4 +49,5 @@ class Facebook(Channel):
         # add whichever other methods you want to create
  
 # and after declaring the class
-__plugin__ = Wordpress  # the channel name
+__plugin__ = Facebook  # the channel name
+__cname__ = "facebook"      #or whichever channel
