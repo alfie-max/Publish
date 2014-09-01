@@ -12,6 +12,7 @@ class Blog(Channel):
     ''' Implements a Blog Api '''
     def __init__(self):
         self.__fields__ = ["Message","Title"]    
+
     def GetAuthInfo(self):
         ''' Read Keys from Config file '''
         cfg = ConfigParser.RawConfigParser()
@@ -21,14 +22,8 @@ class Blog(Channel):
             self.url = cfg.get('Blog', 'URL')
             self.username = cfg.get('Blog', 'Username')
             self.password = unhexlify(cfg.get('Blog', 'Password'))
-            
         else:
-            cfg.add_section('Blog')
-            cfg.set('Blog', 'URL', '')
-            cfg.set('Blog', 'Username', '')
-            cfg.set('Blog', 'Password', '')
-            with open('.publish', 'wb') as configfile:
-                cfg.write(configfile) 
+            self.url = self.username = self.password = ''
 
     def VerifyCredentials(self):
         ''' Tries to access the given URL exists '''       

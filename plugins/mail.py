@@ -33,11 +33,7 @@ class Email(Channel):
             self.username = cfg.get('Email', 'Email Id')
             self.password = unhexlify(cfg.get('Email', 'Password'))
         else:
-            cfg.add_section('Email')
-            cfg.set('Email', 'Email Id', '')
-            cfg.set('Email', 'Password', '')
-            with open('.publish', 'wb') as configfile:
-                cfg.write(configfile)
+            self.username = self.password = ''
                 
     def VerifyCredentials(self):
         """ Tries to login with available login info """

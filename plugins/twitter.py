@@ -40,13 +40,7 @@ class Twitter(Channel):
             self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
             self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
         else:
-            cfg.add_section('Twitter')
-            cfg.set('Twitter', 'Token Key', '')
-            cfg.set('Twitter', 'Token Secret', '')
-            with open('.publish', 'wb') as configfile:
-                cfg.write(configfile)
-
-            self.TOKEN = self.TOKEN_SEC = ''        
+            self.TOKEN = self.TOKEN_SEC = ''
 
     def Authorize(self):
         ''' Authorize the application with Twitter '''
