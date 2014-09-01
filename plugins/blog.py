@@ -29,8 +29,25 @@ class Blog(Channel):
                 self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
  
         def VerifyCredentials(self):
-                # this method should check if the auth info available in the .publish file valid
-                # and return True if it checks out and false if it fails
+                self.GetAuthInfo()
+
+        def GetAuthInfo(self):
+        ''' Read Keys from Config file '''
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        
+        if cfg.has_section('Twitter'):
+            self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
+            self.TOKEN_SEC = unhexlify(cfg.get('Twitter', 'Token Secret'))
+        else:
+            cfg.add_section('Twitter')
+            cfg.set('Twitter', 'Token Key', '')
+            cfg.set('Twitter', 'Token Secret', '')
+            with open('.publish', 'wb') as configfile:
+                cfg.write(configfile)
+
+            self.TOKEN = self.TOKEN_SEC = ''        
+
  
         def GetKeys(self):
                 # You can look at this function from any other plugin, u'll just need to make a few changes
