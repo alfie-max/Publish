@@ -8,21 +8,7 @@ wp_username = "beingshahul"
 wp_password = "n9EDcoT9JuSs"
 wp_blogid = ""
 
-status_draft = 0
-status_published = 1
 
-server = xmlrpclib.ServerProxy(url)
-
-title = "Instantaneous post"
-content = "Testing from publish application."
-categories = ["Uncategorized"]
-tags = ["sometag", "othertag"]
-data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
-
-post_id = server.metaWeblog.newPost(wp_blogid, wp_username, wp_password, data, status_published)
-
- 
-__cname__ = "blog"      #or whichever channel
  
 class Blog(Channel):
         ''' Implements an Blog Api '''
@@ -94,7 +80,7 @@ class Blog(Channel):
         if not self.VerifyCredentials():
             raise AuthorizationError(__cname__)
        
-        def VerifyFields(self, fields):
+        def VerifyFields(self, Blog):
         Message = Blog['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -102,18 +88,24 @@ class Blog(Channel):
         else:
             return False
  
-        def SendMsg(self, Message):
-                # Message: this is a dictionary in the format
-                # {field1:value, field2:value, ...}
-                # and here do what is necessary to send message to this channel
-                # finally return message like
-                # return {'Wordpress':'Blog posted'}
-                # return {'Wordpress':'Blog posting failed'}
-                # return {'Wordpress':'Unable to access network/server'}
-                # u get the idea right.... should return a dict
-                # with key as the channel name and value as the message to be returned
- 
-        # add whichever other methods you want to create
- 
-# and after declaring the class
+        def SendMsg(self, Blog):
+        status_draft = 0
+        status_published = 1
+
+        server = xmlrpclib.ServerProxy(url)
+
+        title = Blog['Title']
+        content = Blog['Message']
+
+        categories = ["Uncategorized"]
+        tags = ["sometag", "othertag"]
+        data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
+
+        post_id = server.metaWeblog.newPost(wp_blogid, wp_username, wp_password, data, status_published)
+
+
+
+
+
 __plugin__ = Blog  # the channel name
+__cname__ = "blog"      #or whichever channel
