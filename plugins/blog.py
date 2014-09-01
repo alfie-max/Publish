@@ -76,16 +76,17 @@ class Blog(Channel):
         content = Blog['Message']
         data = {'title': title, 'description': content}
         
-
         self.GetAuthInfo()      
-        
-        data = {'title': title, 'description': content, 'categories': categories, 'mt_keywords': tags}
+        try:
+            server = xmlrpclib.ServerProxy(self.url)
+        except :
+            return {'Blog':'Unable to access Server'}
 
-        post_id = server.metaWeblog.newPost(blogid, self.username, hexlify(self.password), data, status_published)
+        try:
+            server.metaWeblog.newPost(blogid, self.username, self.password, data, status_published)
+            return {'Blog':'Blog Posted'}
+        except:
+            return {'Blog':'Blog Posting Failed'}  
 
-
-
-
-
-__plugin__ = Blog  # the channel name
-__cname__ = "blog"      #or whichever channel
+__plugin__ = Blog 
+__cname__ = "blog"      
