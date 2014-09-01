@@ -3,7 +3,7 @@ from modules.channel import Channel
 from exception import *
 from binascii import hexlify, unhexlify
 
-wp_url = "http://students.thelycaeum.in/blog/xmlrpc.php"
+url = "http://students.thelycaeum.in/blog/xmlrpc.php"
 wp_username = "beingshahul"
 wp_password = "n9EDcoT9JuSs"
 wp_blogid = ""
@@ -11,7 +11,7 @@ wp_blogid = ""
 status_draft = 0
 status_published = 1
 
-server = xmlrpclib.ServerProxy(wp_url)
+server = xmlrpclib.ServerProxy(url)
 
 title = "Instantaneous post"
 content = "Testing from publish application."
@@ -30,7 +30,11 @@ class Blog(Channel):
                 self.__fields__ = ["Message","Title"]   # and whatever the plugin requires for sending a message
  
         def VerifyCredentials(self):
+         ''' Tries to access the given URL exists '''       
                 self.GetAuthInfo()
+                try: urllib.urlopen(self.URL)
+                except IOError: return False
+                return True
 
         def GetAuthInfo(self):
         ''' Read Keys from Config file '''
@@ -90,4 +94,4 @@ class Blog(Channel):
         # add whichever other methods you want to create
  
 # and after declaring the class
-__plugin__ = Wordpress  # the channel name
+__plugin__ = Blog  # the channel name
