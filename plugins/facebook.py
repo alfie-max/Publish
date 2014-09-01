@@ -1,5 +1,8 @@
-
-#you will need to import these
+import facebook
+import urllib
+import urlparse
+import subprocess
+import warnings
 from modules.channel import Channel
 from exception import *
  
