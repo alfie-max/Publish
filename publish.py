@@ -92,6 +92,7 @@ def main(args):
         for field in field_list:
             fields[field] = config[field]
         responses = {}
+        os.unlink(cfgFile)
         for channel in plugins:
             if channel in channels:
                 plugin = plugins[channel]
