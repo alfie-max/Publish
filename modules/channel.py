@@ -22,6 +22,12 @@ class Channel(object):
         where __cname__ is the channel name variable every channel has'''
         raise NotImplementedError()
 
+    def VerifyFields(self, fields):
+        ''' Each plugin verifies if the fields required by it meets
+        its specific criteria, like if the message passed is empty
+        or not. and returns true if verified and false if not'''
+        raise NotImplementedError()
+
     def SendMsg(self, Message):
         ''' Sends the message to the channel '''
         raise NotImplementedError()
