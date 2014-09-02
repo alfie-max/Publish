@@ -4,6 +4,10 @@ import tempfile
 import os
 from configobj import ConfigObj
 import mock_engine
+import mock_subprocess
+
+publish.get_plugins = mock_engine.get_plugins
+publish.subprocess = mock_subprocess
 
 def test_known_args():
     publish.parse_args(['--twitter'])
@@ -20,13 +24,5 @@ def test_no_args():
     except SystemExit:
         pass
 
-def test_validate_config():
-    (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details 
-    (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
-    publish.add_field('Message', 'string', cfgFile, cfgSpec)
-    publish.validate_configfile(cfgFile, cfgSpec)
-
-def test_get_fields_channels():
-    plugins = mock_engine.get_plugins()
-    args = [('twitter', True),('facebook', True)]
-    publish.get_fields_channels(plugins, args)
+def test_main():
+    publish.main(['--twitter'])

@@ -12,7 +12,7 @@ class Twitter(object):
         return True
 
     def SendMsg(self, msg):
-      return 0
+      return {'':''}
 
 __plugin__ = Twitter
 __cname__ = 'twitter'
