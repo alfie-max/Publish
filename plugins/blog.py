@@ -1,4 +1,3 @@
-import urllib
 import datetime
 import xmlrpclib
 import ConfigParser
