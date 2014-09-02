@@ -1,10 +1,12 @@
 class Facebook(object):
     def __init__(self):
     	self.__fields__ = ['Message']
-        print "I am the facebook channel"
 
     def VerifyCredentials(self):
     	return True
+
+    def VerifyFields(self, fields):
+        return True
 
     def SendMsg(self, msg):
       return 0

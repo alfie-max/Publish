@@ -1,9 +1,8 @@
-from tests.exception import *
+#from tests.exception import *
 
 class Email(object):
     def __init__(self):
     	self.__fields__ = ['Message']
-        print "I am the email channel"
 
     def VerifyCredentials(self):
     	return False

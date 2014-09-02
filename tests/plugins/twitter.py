@@ -1,13 +1,15 @@
 class Twitter(object):
     def __init__(self):
     	self.__fields__ = ['Message']
-        print "I am the twitter channel"
 
     def VerifyCredentials(self):
     	return False
 
     def Authorize(self):
-   		pass   	
+        pass   	
+
+    def VerifyFields(self, fields):
+        return True
 
     def SendMsg(self, msg):
       return 0
