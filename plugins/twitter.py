@@ -26,7 +26,7 @@ class Twitter(Channel):
         self.api = tweepy.API(auth)
  
         try:
-            self.api.me()
+            self.api.verify_credentials()
             return True
         except tweepy.error.TweepError:
             return False
