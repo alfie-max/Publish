@@ -6,6 +6,7 @@ import argparse
 import tempfile
 import subprocess
 
+from shutil import copyfile
 from modules.exception import *
 from modules.engine import get_plugins, dispatch
 from configobj import ConfigObj, ConfigObjError
@@ -28,6 +29,10 @@ def parse_args(args):
             '-{}'.format(plugin[0]), '--{}'.format(plugin),
             action = 'store_true',
             help = 'Post message via {}'.format(plugin).title())
+    parser.add_argument(
+        '--install-plugin', type = str,
+        nargs = 1, metavar='',
+        help = 'Install new plugin')
         
     if len(args) == 0:
         parser.print_help()
@@ -59,6 +64,7 @@ def validate_configfile(cfgFile, cfgSpec):
 def get_fields_channels(plugins, args):
     channels = []
     field_list = []
+    args = args._get_kwargs()
     for arg in args:
         if arg[1] and arg[0] in plugins:
             field_list.extend(plugins[arg[0]].__fields__)
@@ -70,13 +76,27 @@ def get_fields_channels(plugins, args):
         
     return field_list, channels
 
+def check_common_args(args):
+    status = False
+    if args.install_plugin:
+        status = True
+        plugin_path =  args.install_plugin[0]
+        if os.path.isfile(plugin_path):
+            plugin = os.path.basename(plugin_path)
+            plugins_dir = os.getcwd() + '/plugins/' + plugin
+            copyfile(plugin_path ,plugins_dir)
+        else:
+            print "File Not Found"
+    if status:
+        sys.exit()
+        
 def main(args):
     fields = {}
     plugins = get_plugins()
-    args = parse_args(args)._get_kwargs()
+    args = parse_args(args)
+    check_common_args(args)
 
     field_list, channels = get_fields_channels(plugins, args)
-
     if len(channels) == 0:
         return
 
