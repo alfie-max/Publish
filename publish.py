@@ -97,8 +97,6 @@ def main(args):
     check_common_args(args)
 
     field_list, channels = get_fields_channels(plugins, args)
-    if len(channels) == 0:
-        return
 
     (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
     (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
