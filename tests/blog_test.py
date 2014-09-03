@@ -8,7 +8,7 @@ blog = blog.Blog()
 
 def test_SendMsg():
     blogmsg = {'Message':'Test Message', 'Title':'Some Title'}
-    
+    blog.SendMsg(blogmsg)
 
 def test_Verifyfields():
     blog.VerifyFields({'Message':'Test Message'})
