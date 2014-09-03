@@ -1,4 +1,3 @@
-import datetime
 import xmlrpclib
 import ConfigParser
 
