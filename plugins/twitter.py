@@ -68,10 +68,7 @@ class Twitter(Channel):
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
-
-        if not self.VerifyCredentials():
-            raise AuthorizationError({'Twitter':'Authorization Failed'})
-        
+ 
         ''' Update Config file with Token Keys '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -81,6 +78,9 @@ class Twitter(Channel):
         cfg.set('Twitter', 'Token Secret', hexlify(self.TOKEN_SEC))
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
+
+        if not self.VerifyCredentials():
+            raise AuthorizationError({'Twitter':'Authorization Failed'})
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''

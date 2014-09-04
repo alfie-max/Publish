@@ -40,9 +40,6 @@ class Blog(Channel):
         self.username = raw_input("Username : ")
         self.password = getpass("Password : ")
 
-        if not self.VerifyCredentials():
-            raise AuthorizationError({'Blog':'Authorization Failed'})
-
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -53,6 +50,9 @@ class Blog(Channel):
         cfg.set('Blog', 'Password', hexlify(self.password))
         with open('.publish', 'wb') as configfile:
             cfg.write(configfile)
+
+        if not self.VerifyCredentials():
+            raise AuthorizationError({'Blog':'Authorization Failed'})
        
     def VerifyFields(self, Blog):
         Message = Blog['Message']
