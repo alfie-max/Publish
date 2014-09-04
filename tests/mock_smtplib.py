@@ -17,7 +17,7 @@ class SMTP(object):
 class SMTPException(Exception):pass
 
 def raw_input(msg):
-    pass
+    return ''
 
 def getpass(msg):
-    pass
+    return ''

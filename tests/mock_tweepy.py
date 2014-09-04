@@ -39,4 +39,4 @@ class error(object):
     class TweepError(Exception): pass
 
 def raw_input(msg):
-    pass
+    return ''

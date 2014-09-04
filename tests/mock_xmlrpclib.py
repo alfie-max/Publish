@@ -4,9 +4,9 @@ def ServerProxy(url):
     server = Server()
     return server
 
-def raw_input(msg):pass
+def raw_input(msg):return ''
 
-def getpass(msg):pass
+def getpass(msg):return ''
 
 
 class Server(object):
