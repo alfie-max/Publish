@@ -14,7 +14,9 @@ setup(
     install_requires=[
         "Pillow==2.5.3",
         "argparse==1.2.1",
+        "beautifulsoup4==4.3.2",
         "configobj==5.0.5",
+        "mechanize==0.2.5",
         "py==1.4.23",
         "six==1.7.3",
         "tweepy==2.3.0",
