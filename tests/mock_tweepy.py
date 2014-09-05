@@ -40,3 +40,6 @@ class error(object):
 
 def raw_input(msg):
     return ''
+
+def getpass(msg):
+   return ''

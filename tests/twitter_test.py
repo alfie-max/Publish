@@ -1,9 +1,11 @@
 from ..plugins import twitter
+from mock_browser import Browser
 import mock_tweepy
-import mock_browser
+
 twitter.tweepy = mock_tweepy
+twitter.getpass = mock_tweepy.getpass
+twitter.Browser = Browser
 twitter.raw_input = mock_tweepy.raw_input
-twitter.webbrowser = mock_browser
 
 T = twitter.Twitter()
 
