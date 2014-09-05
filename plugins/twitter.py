@@ -64,9 +64,9 @@ class Twitter(Channel):
         br.form['session[username_or_email]'] = username
         br.form['session[password]'] = password
         response = br.submit()
+        content = response.get_data()
         br.close()
 
-        content = response.get_data()
         soup = BeautifulSoup(content)
         code = soup.find('code')
         if code:
