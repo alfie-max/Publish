@@ -63,7 +63,7 @@ class Twitter(Channel):
         br.form = list(br.forms())[0]
         br.form['session[username_or_email]'] = username
         br.form['session[password]'] = password
-        response = br.submit(
+        response = br.submit()
         br.close()
 
         content = response.get_data()
