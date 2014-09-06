@@ -7,8 +7,8 @@ class OAuthHandler(object):
       return 'http://www.example.com'
 
    def get_access_token(self, pin):
-      self.access_token.key = 'key'
-      self.access_token.secret = 'secret'
+      self.access_token.key = ''
+      self.access_token.secret = ''
 
 
    def set_access_token(self, token_key, token_secret):
