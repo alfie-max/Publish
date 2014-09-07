@@ -28,9 +28,15 @@ class Blog(Channel):
         self.GetAuthInfo()
         try: 
             server = xmlrpclib.ServerProxy(self.url)
+        except xmlrpclib.Error:
+            raise NetworkError({'Blog':'Unable to access network'})
+        except IOError:
+            return False
+
+        try:
             server.metaWeblog.getRecentPosts('', self.username, self.password)
             return True
-        except (IOError, xmlrpclib.Fault):
+        except (IOError, xmlrpclib.Error):
             return False       
     
     def Authorize(self):
@@ -72,7 +78,7 @@ class Blog(Channel):
         self.GetAuthInfo()      
         try:
             server = xmlrpclib.ServerProxy(self.url)
-        except :
+        except xmlrpclib.Error:
             return {'Blog':'Unable to access Server'}
 
         try:
