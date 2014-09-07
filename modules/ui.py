@@ -84,10 +84,13 @@ def check_common_args(args):
             plugins_dir = os.getcwd() + '/plugins/' + plugin
             copyfile(plugin_path ,plugins_dir)
         else:
-            print "File Not Found"
+            ui_print ('File Not Found')
     if status:
         sys.exit()
         
+def ui_print(msg):
+    print msg
+
 def main(args):
     fields = {}
     plugins = get_plugins()
@@ -112,10 +115,12 @@ def main(args):
         for channel in plugins:
             if channel in channels:
                 plugin = plugins[channel]
-                responses.update(dispatch(plugin, fields))
-        for channel, response in responses.iteritems():
-            print "{:<25} {:<25}".format(channel, response)
+                ui_print(channel.title())
+                try:
+                    dispatch(plugin, fields)
+                except Failed, e:
+                    ui_print(e.message)
     else:
-        print 'Input file validation failed'
+        ui_print ('Input file validation failed')
         os.unlink(cfgFile)
         sys.exit(1)

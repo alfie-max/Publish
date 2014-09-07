@@ -1,7 +1,9 @@
 import xmlrpclib
 import ConfigParser
 
+from socket import gaierror
 from getpass import getpass
+from modules.ui import ui_print
 from modules.channel import Channel
 from modules.exception import *
 from binascii import hexlify, unhexlify
@@ -26,18 +28,20 @@ class Blog(Channel):
     def VerifyCredentials(self):
         ''' Tries to access the given URL exists '''       
         self.GetAuthInfo()
-        try: 
+        try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            raise NetworkError({'Blog':'Unable to access network'})
+            raise NetworkError('Unable to access network')
         except IOError:
             return False
 
         try:
-            server.metaWeblog.getRecentPosts('', self.username, self.password)
+            server.metaWeblog.getRecentPosts('', self.username, self.password, 1)
             return True
-        except (IOError, xmlrpclib.Error):
-            return False       
+        except (xmlrpclib.Error, gaierror):
+            raise NetworkError('Unable to access network')
+        except IOError:
+            return False
     
     def Authorize(self):
         ''' Get user blog authentication data '''
@@ -58,7 +62,7 @@ class Blog(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError({'Blog':'Authorization Failed'})
+            raise AuthorizationError('Authorization Failed')
        
     def VerifyFields(self, Blog):
         Message = Blog['Message']
@@ -75,17 +79,18 @@ class Blog(Channel):
         content = Blog['Message']
         data = {'title': title, 'description': content}
         
-        self.GetAuthInfo()      
+        self.GetAuthInfo()
+        ui_print ('Posting on blog {}...'.format(self.url))
         try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            return {'Blog':'Unable to access Server'}
+            raise NetworkError('Unable to access Server')
 
         try:
             server.metaWeblog.newPost(blogid, self.username, self.password, data, status_published)
-            return {'Blog':'Blog Posted'}
+            ui_print ('Successfully Posted')
         except:
-            return {'Blog':'Blog Posting Failed'}  
+            ui_print ('Blog Posting Failed')
 
 __plugin__ = Blog 
 __cname__ = "blog"      

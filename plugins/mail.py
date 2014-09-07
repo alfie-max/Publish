@@ -3,6 +3,7 @@ import smtplib
 
 from socket import gaierror
 from getpass import getpass
+from modules.ui import ui_print
 from modules.exception import *
 from modules.channel import Channel
 from binascii import hexlify, unhexlify
@@ -20,7 +21,7 @@ class Email(Channel):
         try:
             self.server = smtplib.SMTP('smtp.gmail.com:587')
         except (smtplib.SMTPException, gaierror):
-            raise NetworkError({'Email':'Unable to access network'})
+            raise NetworkError('Unable to access network')
 
         try:
             self.server.ehlo()
@@ -61,7 +62,7 @@ class Email(Channel):
 
     def Authorize(self):
         """ Get user mail authentication data """
-        print "Please Authenticate your Email Account"
+        ui_print ('Authorizing Email Account...')
         self.username = raw_input("Email Id : ")
         self.password = getpass("Password : ")
         
@@ -76,7 +77,7 @@ class Email(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError({'Email':'Authorization Failed'})
+            raise AuthorizationError('Authorization Failed')
 
     def VerifyFields(self, Mail):
         Message = Mail['Message']
@@ -100,20 +101,20 @@ class Email(Channel):
             try:
                 self.server.login(self.username, self.password)
             except smtplib.SMTPException:
-                return {'Email':'Login Failed'}
+                ui_print ('Login Failed')
+                return 1
             fromAddr = self.username
-            response = {}
             for toAddr in To_Email:
                 toAddr = toAddr.strip()
+                ui_print('Sending mail to {}...'.format(toAddr))
                 mail = self.ComposeMail(Subject, toAddr, Message)
                 try:
                     self.server.sendmail(fromAddr, toAddr, mail)
-                    response[toAddr] = 'Mail Sent'
+                    ui_print ('Successfully Sent')
                 except:
-                    response[toAddr] = 'Mail Sending Failed'
-            return response
+                    ui_print ('Sending Failed')
         else:
-            return {'Email':'Unable to access Mail Server'}
+            raise NetworkError('Unable to access Mail Server')
 
 
 __plugin__ = Email
