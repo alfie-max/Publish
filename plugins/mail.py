@@ -42,7 +42,7 @@ class Email(Channel):
                 
     def VerifyCredentials(self):
         """ Tries to login with available login info """
-        self.SetupServer():
+        self.SetupServer()
         self.GetAuthInfo()
         try:
             self.server.login(self.username, self.password)
