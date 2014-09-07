@@ -1,6 +1,7 @@
 import ConfigParser
 import smtplib
 
+from socket import gaierror
 from getpass import getpass
 from modules.exception import *
 from modules.channel import Channel
@@ -18,10 +19,14 @@ class Email(Channel):
         """ Setup the mail server """
         try:
             self.server = smtplib.SMTP('smtp.gmail.com:587')
+        except (smtplib.SMTPException, gaierror):
+            raise NetworkError({'Email':'Unable to access network'})
+
+        try:
             self.server.ehlo()
             self.server.starttls()
             return True
-        except smtplib.SMTPException:
+        except (smtplib.SMTPException):
             return False
 
     def GetAuthInfo(self):
@@ -37,7 +42,7 @@ class Email(Channel):
                 
     def VerifyCredentials(self):
         """ Tries to login with available login info """
-        self.SetupServer()
+        self.SetupServer():
         self.GetAuthInfo()
         try:
             self.server.login(self.username, self.password)

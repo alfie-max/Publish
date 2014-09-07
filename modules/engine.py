@@ -23,11 +23,14 @@ def dispatch(plugin, fields):
     if not plugin.VerifyFields(fields):
         module = importlib.import_module(plugin.__module__)
         return {module.__cname__.title() : 'Invalid Fields'}
-    if not plugin.VerifyCredentials():
-        try:
-            plugin.Authorize()
-        except (AuthorizationError, Failed), e:
-            return e.message
+    try:
+        if not plugin.VerifyCredentials():
+            try:
+                plugin.Authorize()
+            except (AuthorizationError, NetworkError), e:
+                return e.message
+    except NetworkError, e:
+        return e.message
 
     req_fields_list = plugin.__fields__
     req_fields = {}
