@@ -3,6 +3,7 @@ import ConfigParser
 import tweepy
 import tempfile
 
+from urllib2 import URLError
 from getpass import getpass
 from mechanize import Browser
 from bs4 import BeautifulSoup
@@ -51,24 +52,36 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            raise Failed({'Twitter':'Unable to access network'})
+            raise NetworkError({'Twitter':'Unable to access network'})
 
         print "Please Authenticate your Twitter Account"
         username = raw_input("Username : ")
         password = getpass("Password : ")
 
         br = Browser()
-        br.set_handle_robots(False)        
-        br.open(auth_url)
+        br.set_handle_robots(False)
+
+        try:
+            br.open(auth_url)
+        except URLError:
+            raise NetworkError({'Twitter':'Unable to access network'})
         br.form = list(br.forms())[0]
+
         br.form['session[username_or_email]'] = username
         br.form['session[password]'] = password
-        response = br.submit()
+
+        try:
+            response = br.submit()
+        except URLError:
+            br.close()
+            raise NetworkError({'Twitter':'Unable to access network'})
+
         content = response.get_data()
         br.close()
 
         soup = BeautifulSoup(content)
         code = soup.find('code')
+
         if code:
             pin = code.text
         else:
@@ -77,7 +90,7 @@ class Twitter(Channel):
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            raise AuthorizationError(__cname__)
+            raise AuthorizationError({'Twitter':'Authorization Failed'})
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
