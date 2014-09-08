@@ -10,7 +10,6 @@ class OAuthHandler(object):
       self.access_token.key = ''
       self.access_token.secret = ''
 
-
    def set_access_token(self, token_key, token_secret):
       self.access_token.key = token_key
       self.access_token.secret = token_secret
@@ -38,8 +37,5 @@ class API(object):
 class error(object):
     class TweepError(Exception): pass
 
-def raw_input(msg):
-    return ''
-
-def getpass(msg):
+def ui_prompt(msg, mask=None):
    return ''

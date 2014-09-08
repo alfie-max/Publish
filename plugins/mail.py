@@ -112,7 +112,7 @@ class Email(Channel):
                 try:
                     self.server.sendmail(fromAddr, toAddr, mail)
                     ui_print (colored('Successfully Sent', 'green'))
-                except:
+                except smtplib.SMTPException:
                     ui_print (colored('Sending Failed', 'red'))
         else:
             raise NetworkError('Unable to access Mail Server')

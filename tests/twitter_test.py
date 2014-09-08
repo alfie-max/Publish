@@ -3,9 +3,8 @@ from mock_browser import Browser
 import mock_tweepy
 
 twitter.tweepy = mock_tweepy
-twitter.getpass = mock_tweepy.getpass
 twitter.Browser = Browser
-twitter.raw_input = mock_tweepy.raw_input
+twitter.ui_prompt = mock_tweepy.ui_prompt
 
 T = twitter.Twitter()
 

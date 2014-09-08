@@ -16,8 +16,5 @@ class SMTP(object):
 
 class SMTPException(Exception):pass
 
-def raw_input(msg):
-    return ''
-
-def getpass(msg):
+def ui_prompt(msg, mask=None):
     return ''

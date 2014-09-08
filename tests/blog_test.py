@@ -1,8 +1,8 @@
 from ..plugins import blog
 import mock_xmlrpclib
 blog.xmlrpclib = mock_xmlrpclib
-blog.getpass = mock_xmlrpclib.getpass
-blog.raw_input = mock_xmlrpclib.raw_input
+blog.ui_prompt = mock_xmlrpclib.ui_prompt
+blog.ui_print = mock_xmlrpclib.ui_print
 
 blog = blog.Blog()
 

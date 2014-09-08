@@ -14,3 +14,9 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
     plugins[fb.__cname__] = plugin
 
     return plugins
+
+def raw_input(msg):
+    return ''
+
+def getpass(msg):
+    return ''

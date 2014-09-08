@@ -1,8 +1,7 @@
 from ..plugins import mail
 import mock_smtplib
 mail.smtplib = mock_smtplib
-mail.getpass = mock_smtplib.getpass
-mail.raw_input = mock_smtplib.raw_input
+mail.ui_prompt = mock_smtplib.ui_prompt
 
 mail = mail.Email()
 

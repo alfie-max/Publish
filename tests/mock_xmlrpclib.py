@@ -4,10 +4,8 @@ def ServerProxy(url):
     server = Server()
     return server
 
-def raw_input(msg):return ''
-
-def getpass(msg):return ''
-
+def ui_prompt(msg, mask=None): return ''
+def ui_print(msg): return ''
 
 class Server(object):
     def __init__(self):
@@ -15,7 +13,8 @@ class Server(object):
 
 class metaWeblog(object):
     def __init__(self):pass
-    def getRecentPosts(self, n, username, password):pass
+    def getRecentPosts(self, n, username, password, count):pass
+    def newPost(self, blogid, username, password, data, status):pass
 
 class Fault(Exception):pass
 

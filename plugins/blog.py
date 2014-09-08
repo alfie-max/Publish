@@ -38,7 +38,7 @@ class Blog(Channel):
         try:
             server.metaWeblog.getRecentPosts('', self.username, self.password, 1)
             return True
-        except (xmlrpclib.Error, gaierror):
+        except (xmlrpclib.Fault, gaierror):
             raise NetworkError('Unable to access network')
         except IOError:
             return False
@@ -89,7 +89,7 @@ class Blog(Channel):
         try:
             server.metaWeblog.newPost(blogid, self.username, self.password, data, status_published)
             ui_print (colored('Successfully Posted', 'green'))
-        except:
+        except (xmlrpclib.Fault, gaierror):
             ui_print (colored('Blog Posting Failed', 'red'))
 
 __plugin__ = Blog 
