@@ -3,6 +3,7 @@ import ConfigParser
 import tweepy
 import tempfile
 
+from termcolor import colored
 from urllib2 import URLError
 from getpass import getpass
 from mechanize import Browser
@@ -53,9 +54,9 @@ class Twitter(Channel):
         try:
             auth_url = auth.get_authorization_url()
         except tweepy.error.TweepError:
-            raise NetworkError('Unable to access network')
+            raise NetworkError(colored('Unable to access network', 'red'))
 
-        ui_print ('Authorizing Twitter Account...')
+        ui_print (colored('Authorizing Twitter Account...', 'yellow'))
         username = raw_input("Username : ")
         password = getpass("Password : ")
 
@@ -65,7 +66,7 @@ class Twitter(Channel):
         try:
             br.open(auth_url)
         except URLError:
-            raise NetworkError('Unable to access network')
+            raise NetworkError(colored('Unable to access network', 'red'))
 
         br.form = list(br.forms())[0]
         br.form['session[username_or_email]'] = username
@@ -75,7 +76,7 @@ class Twitter(Channel):
             response = br.submit()
         except URLError:
             br.close()
-            raise NetworkError('Unable to access network')
+            raise NetworkError(colored('Unable to access network', 'red'))
 
         content = response.get_data()
         br.close()
@@ -86,12 +87,12 @@ class Twitter(Channel):
         if code:
             pin = code.text
         else:
-            raise AuthorizationError('Authorization Failed')
+            raise AuthorizationError(colored('Authorization Failed', 'red'))
 
         try:
             auth.get_access_token(pin)
         except tweepy.error.TweepError, e:
-            raise AuthorizationError('Authorization Failed')
+            raise AuthorizationError(colored('Authorization Failed', 'red'))
         
         self.TOKEN = auth.access_token.key
         self.TOKEN_SEC = auth.access_token.secret
@@ -107,7 +108,7 @@ class Twitter(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError('Authorization Failed')
+            raise AuthorizationError(colored('Authorization Failed', 'red'))
 
     def Text2Img(self, Message):
         ''' Creates an image containing the Message '''
@@ -193,11 +194,11 @@ class Twitter(Channel):
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
         self.api = tweepy.API(auth)
-        ui_print ('Sending Twitter Message...')
+        ui_print (colored('Sending Twitter Message...', 'blue'))
         if self.Tweet(Message):
-            ui_print ('Successfully Sent')
+            ui_print (colored('Successfully Sent', 'green'))
         else:
-            ui_print ('Sending Failed')
+            ui_print (colored('Sending Failed', 'red'))
 
 __plugin__ = Twitter
 __cname__ = 'twitter'

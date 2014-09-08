@@ -1,6 +1,7 @@
 import xmlrpclib
 import ConfigParser
 
+from termcolor import colored
 from socket import gaierror
 from getpass import getpass
 from modules.ui import ui_print
@@ -31,7 +32,7 @@ class Blog(Channel):
         try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            raise NetworkError('Unable to access network')
+            raise NetworkError(colored('Unable to access network', 'red'))
         except IOError:
             return False
 
@@ -39,13 +40,13 @@ class Blog(Channel):
             server.metaWeblog.getRecentPosts('', self.username, self.password, 1)
             return True
         except (xmlrpclib.Error, gaierror):
-            raise NetworkError('Unable to access network')
+            raise NetworkError(colored('Unable to access network', 'red'))
         except IOError:
             return False
     
     def Authorize(self):
         ''' Get user blog authentication data '''
-        print "Please Authenticate your Blog Account"
+        ui_print (colored('Authorizing Blog Account...', 'yellow'))
         self.url = raw_input("Blog URL : ")
         self.username = raw_input("Username : ")
         self.password = getpass("Password : ")
@@ -62,7 +63,7 @@ class Blog(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError('Authorization Failed')
+            raise AuthorizationError(colored('Authorization Failed', 'red'))
        
     def VerifyFields(self, Blog):
         Message = Blog['Message']
@@ -80,17 +81,17 @@ class Blog(Channel):
         data = {'title': title, 'description': content}
         
         self.GetAuthInfo()
-        ui_print ('Posting on blog {}...'.format(self.url))
+        ui_print (colored('Posting on blog {}...'.format(self.url), 'blue'))
         try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            raise NetworkError('Unable to access Server')
+            raise NetworkError(colored('Unable to access Server', 'red'))
 
         try:
             server.metaWeblog.newPost(blogid, self.username, self.password, data, status_published)
-            ui_print ('Successfully Posted')
+            ui_print (colored('Successfully Posted', 'green'))
         except:
-            ui_print ('Blog Posting Failed')
+            ui_print (colored('Blog Posting Failed', 'red'))
 
 __plugin__ = Blog 
 __cname__ = "blog"      

@@ -1,7 +1,8 @@
 import ConfigParser
 import smtplib
 
-from socket import gaierror
+from termcolor import colored
+from socket import gaierror, error
 from getpass import getpass
 from modules.ui import ui_print
 from modules.exception import *
@@ -20,8 +21,8 @@ class Email(Channel):
         """ Setup the mail server """
         try:
             self.server = smtplib.SMTP('smtp.gmail.com:587')
-        except (smtplib.SMTPException, gaierror):
-            raise NetworkError('Unable to access network')
+        except (smtplib.SMTPException, gaierror, error):
+            raise NetworkError(colored('Unable to access network', 'red'))
 
         try:
             self.server.ehlo()
@@ -62,7 +63,7 @@ class Email(Channel):
 
     def Authorize(self):
         """ Get user mail authentication data """
-        ui_print ('Authorizing Email Account...')
+        ui_print (colored('Authorizing Email Account...', 'yellow'))
         self.username = raw_input("Email Id : ")
         self.password = getpass("Password : ")
         
@@ -77,7 +78,7 @@ class Email(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError('Authorization Failed')
+            raise AuthorizationError(colored('Authorization Failed', 'red'))
 
     def VerifyFields(self, Mail):
         Message = Mail['Message']
@@ -101,20 +102,20 @@ class Email(Channel):
             try:
                 self.server.login(self.username, self.password)
             except smtplib.SMTPException:
-                ui_print ('Login Failed')
+                ui_print (colored('Login Failed', 'red'))
                 return 1
             fromAddr = self.username
             for toAddr in To_Email:
                 toAddr = toAddr.strip()
-                ui_print('Sending mail to {}...'.format(toAddr))
+                ui_print(colored('Sending mail to {}...'.format(toAddr), 'blue'))
                 mail = self.ComposeMail(Subject, toAddr, Message)
                 try:
                     self.server.sendmail(fromAddr, toAddr, mail)
-                    ui_print ('Successfully Sent')
+                    ui_print (colored('Successfully Sent', 'green'))
                 except:
-                    ui_print ('Sending Failed')
+                    ui_print (colored('Sending Failed', 'red'))
         else:
-            raise NetworkError('Unable to access Mail Server')
+            raise NetworkError(colored('Unable to access Mail Server', 'red'))
 
 
 __plugin__ = Email

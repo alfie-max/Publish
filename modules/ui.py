@@ -4,6 +4,7 @@ import argparse
 import tempfile
 import subprocess
 
+from termcolor import colored
 from shutil import copyfile
 from modules.exception import *
 from modules.engine import get_plugins, dispatch
@@ -84,7 +85,7 @@ def check_common_args(args):
             plugins_dir = os.getcwd() + '/plugins/' + plugin
             copyfile(plugin_path ,plugins_dir)
         else:
-            ui_print ('File Not Found')
+            ui_print (colored('File Not Found', 'red'))
     if status:
         sys.exit()
         
@@ -115,12 +116,12 @@ def main(args):
         for channel in plugins:
             if channel in channels:
                 plugin = plugins[channel]
-                ui_print(channel.title())
+                ui_print(colored(channel.title(), 'cyan', attrs=['underline']))
                 try:
                     dispatch(plugin, fields)
                 except Failed, e:
-                    ui_print(e.message)
+                    ui_print(colored(e.message, 'red'))
     else:
-        ui_print ('Input file validation failed')
+        ui_print (clored('Input file validation failed'), 'red')
         os.unlink(cfgFile)
         sys.exit(1)

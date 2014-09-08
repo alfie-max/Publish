@@ -41,6 +41,3 @@ def dispatch(plugin, fields):
         plugin.SendMsg(req_fields)
     except NetworkError, e:
         raise Failed(e.message)
-
-if __name__ == '__main__':
-    main()
