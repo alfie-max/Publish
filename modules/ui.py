@@ -4,8 +4,9 @@ import argparse
 import tempfile
 import subprocess
 
-from termcolor import colored
+from getpass import getpass
 from shutil import copyfile
+from termcolor import colored
 from modules.exception import *
 from modules.engine import get_plugins, dispatch
 from configobj import ConfigObj, ConfigObjError
@@ -91,6 +92,12 @@ def check_common_args(args):
         
 def ui_print(msg):
     print msg
+
+def ui_prompt(msg, mask=None):
+    if mask:
+        return getpass(colored(msg), 'yellow')
+    else:
+        return raw_input(colored(msg), 'yellow')
 
 def main(args):
     fields = {}

@@ -3,8 +3,7 @@ import ConfigParser
 
 from termcolor import colored
 from socket import gaierror
-from getpass import getpass
-from modules.ui import ui_print
+from modules.ui import ui_print, ui_prompt
 from modules.channel import Channel
 from modules.exception import *
 from binascii import hexlify, unhexlify
@@ -48,8 +47,8 @@ class Blog(Channel):
         ''' Get user blog authentication data '''
         ui_print (colored('Authorizing Blog Account...', 'yellow'))
         self.url = raw_input("Blog URL : ")
-        self.username = raw_input("Username : ")
-        self.password = getpass("Password : ")
+        self.username = ui_prompt("Username : ")
+        self.password = ui_prompt("Password : ", mask = True)
 
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()

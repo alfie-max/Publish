@@ -3,8 +3,7 @@ import smtplib
 
 from termcolor import colored
 from socket import gaierror, error
-from getpass import getpass
-from modules.ui import ui_print
+from modules.ui import ui_print, ui_prompt
 from modules.exception import *
 from modules.channel import Channel
 from binascii import hexlify, unhexlify
@@ -64,8 +63,9 @@ class Email(Channel):
     def Authorize(self):
         """ Get user mail authentication data """
         ui_print (colored('Authorizing Email Account...', 'yellow'))
-        self.username = raw_input("Email Id : ")
-        self.password = getpass("Password : ")
+        self.username = ui_prompt("Username : ")
+        self.password = ui_prompt("Password : ", mask = True)
+
         
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()

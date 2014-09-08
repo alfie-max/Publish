@@ -5,10 +5,9 @@ import tempfile
 
 from termcolor import colored
 from urllib2 import URLError
-from getpass import getpass
 from mechanize import Browser
 from bs4 import BeautifulSoup
-from modules.ui import ui_print
+from modules.ui import ui_print, ui_prompt
 from modules.consumer import *
 from modules.exception import *
 from modules.channel import Channel
@@ -57,8 +56,8 @@ class Twitter(Channel):
             raise NetworkError(colored('Unable to access network', 'red'))
 
         ui_print (colored('Authorizing Twitter Account...', 'yellow'))
-        username = raw_input("Username : ")
-        password = getpass("Password : ")
+        username = ui_prompt("Username : ")
+        password = ui_prompt("Password : ", mask = True)
 
         br = Browser()
         br.set_handle_robots(False)
