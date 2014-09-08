@@ -21,7 +21,7 @@ class Email(Channel):
         try:
             self.server = smtplib.SMTP('smtp.gmail.com:587')
         except (smtplib.SMTPException, gaierror, error):
-            raise NetworkError(colored('Unable to access network', 'red'))
+            raise NetworkError('Unable to access network')
 
         try:
             self.server.ehlo()
@@ -78,7 +78,7 @@ class Email(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError(colored('Authorization Failed', 'red'))
+            raise AuthorizationError('Authorization Failed')
 
     def VerifyFields(self, Mail):
         Message = Mail['Message']
@@ -115,7 +115,7 @@ class Email(Channel):
                 except:
                     ui_print (colored('Sending Failed', 'red'))
         else:
-            raise NetworkError(colored('Unable to access Mail Server', 'red'))
+            raise NetworkError('Unable to access Mail Server')
 
 
 __plugin__ = Email

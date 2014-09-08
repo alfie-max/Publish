@@ -31,7 +31,7 @@ class Blog(Channel):
         try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            raise NetworkError(colored('Unable to access network', 'red'))
+            raise NetworkError('Unable to access network')
         except IOError:
             return False
 
@@ -39,14 +39,14 @@ class Blog(Channel):
             server.metaWeblog.getRecentPosts('', self.username, self.password, 1)
             return True
         except (xmlrpclib.Error, gaierror):
-            raise NetworkError(colored('Unable to access network', 'red'))
+            raise NetworkError('Unable to access network')
         except IOError:
             return False
     
     def Authorize(self):
         ''' Get user blog authentication data '''
         ui_print (colored('Authorizing Blog Account...', 'yellow'))
-        self.url = raw_input("Blog URL : ")
+        self.url = ui_prompt("Blog URL : ")
         self.username = ui_prompt("Username : ")
         self.password = ui_prompt("Password : ", mask = True)
 
@@ -62,7 +62,7 @@ class Blog(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
-            raise AuthorizationError(colored('Authorization Failed', 'red'))
+            raise AuthorizationError('Authorization Failed')
        
     def VerifyFields(self, Blog):
         Message = Blog['Message']
@@ -84,7 +84,7 @@ class Blog(Channel):
         try:
             server = xmlrpclib.ServerProxy(self.url)
         except xmlrpclib.Error:
-            raise NetworkError(colored('Unable to access Server', 'red'))
+            raise NetworkError('Unable to access Server')
 
         try:
             server.metaWeblog.newPost(blogid, self.username, self.password, data, status_published)

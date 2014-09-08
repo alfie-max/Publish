@@ -95,9 +95,9 @@ def ui_print(msg):
 
 def ui_prompt(msg, mask=None):
     if mask:
-        return getpass(colored(msg), 'yellow')
+        return getpass(colored(msg, 'yellow'))
     else:
-        return raw_input(colored(msg), 'yellow')
+        return raw_input(colored(msg, 'yellow'))
 
 def main(args):
     fields = {}
