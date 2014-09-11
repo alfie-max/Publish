@@ -21,8 +21,7 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
 
 def dispatch(plugin, fields):
     if not plugin.VerifyFields(fields):
-        module = importlib.import_module(plugin.__module__)
-        raise Failed(module.__cname__.title() + ' has Invalid Fields')
+        raise Failed('Invalid Fields')
     try:
         if not plugin.VerifyCredentials():
             try:

@@ -96,14 +96,9 @@ def get_fields_channels(plugins, args):
 
 def check_common_args(args):
     status = False
-    if args.list:
-        status = True
-        plugins = get_plugins()
-        ui_print(colored('Installed Plugins :', 'blue'))
-        for channel in plugins:
-            ui_print(colored(' '*20 + channel.title(), 'blue'))
-
     if args.reset_plugin:
+        if status:
+            sys.exit()
         status = True
         plugins = get_plugins()
         ch = {}
@@ -124,7 +119,18 @@ def check_common_args(args):
                 ui_print(colored('Invalid Entry', 'red'))
                 sys.exit(1)
 
+    if args.list:
+        if status:
+            sys.exit()
+        status = True
+        plugins = get_plugins()
+        ui_print(colored('Installed Plugins :', 'blue'))
+        for channel in plugins:
+            ui_print(colored(' '*20 + channel.title(), 'blue'))
+
     if args.install_plugin:
+        if status:
+            sys.exit()
         status = True
         plugin_path =  args.install_plugin[0]
         if os.path.isfile(plugin_path):
@@ -141,10 +147,14 @@ def ui_print(msg):
     print msg
 
 def ui_prompt(msg, mask=None):
-    if mask:
-        return getpass(colored(msg, 'yellow'))
-    else:
-        return raw_input(colored(msg, 'yellow'))
+    try:
+        if mask:
+            return getpass(colored(msg, 'yellow'))
+        else:
+            return raw_input(colored(msg, 'yellow'))
+    except KeyboardInterrupt:
+        print '\n'
+        sys.exit(1)
 
 def main(args):
     fields = {}
@@ -170,7 +180,7 @@ def main(args):
         for channel in plugins:
             if channel in channels:
                 plugin = plugins[channel]
-                ui_print(colored(channel.title(), 'cyan', attrs=['underline']))
+                ui_print(colored('\n' + channel.title(), 'cyan', attrs=['underline']))
                 try:
                     dispatch(plugin, fields)
                 except Failed, e:
