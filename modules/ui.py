@@ -38,6 +38,10 @@ def parse_args(args):
         action = 'store_true',
         help = 'List all installed plugins')
     parser.add_argument(
+        '-r', '--reset-plugin',
+        action = 'store_true',
+        help = "Reset plugin's saved config")
+    parser.add_argument(
         '--install-plugin', type = str,
         nargs = 1, metavar='',
         help = 'Install new plugin')
@@ -98,6 +102,28 @@ def check_common_args(args):
         ui_print(colored('Installed Plugins :', 'blue'))
         for channel in plugins:
             ui_print(colored(' '*20 + channel.title(), 'blue'))
+
+    if args.reset_plugin:
+        status = True
+        plugins = get_plugins()
+        ch = {}
+        ui_print(colored('Installed Plugins :', 'blue'))
+        for i,channel in enumerate(plugins):
+            ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
+            ch[i+1] = channel
+        choices = ui_prompt('Select plugin[s] to reset (separate with spaces) : ').split()
+        for i, choice in enumerate(choices):
+            try:
+                choices[i] = int(choice)
+                if choices[i] in ch:
+                    plugin = plugins[ch[choices[i]]]
+                    plugin.Reset()
+                else:
+                    raise ValueError
+            except ValueError:
+                ui_print(colored('Invalid Entry', 'red'))
+                sys.exit(1)
+
     if args.install_plugin:
         status = True
         plugin_path =  args.install_plugin[0]
@@ -107,6 +133,7 @@ def check_common_args(args):
             copyfile(plugin_path ,plugins_dir)
         else:
             ui_print (colored('File Not Found', 'red'))
+
     if status:
         sys.exit()
         
