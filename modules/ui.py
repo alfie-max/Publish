@@ -30,6 +30,10 @@ def parse_args(args):
             action = 'store_true',
             help = 'Post message via {}'.format(plugin).title())
     parser.add_argument(
+        '-a', '--all',
+        action = 'store_true',
+        help = 'Send via all installed plugins')
+    parser.add_argument(
         '--install-plugin', type = str,
         nargs = 1, metavar='',
         help = 'Install new plugin')
@@ -64,11 +68,17 @@ def validate_configfile(cfgFile, cfgSpec):
 def get_fields_channels(plugins, args):
     channels = []
     field_list = []
-    args = args._get_kwargs()
-    for arg in args:
-        if arg[1] and arg[0] in plugins:
-            field_list.extend(plugins[arg[0]].__fields__)
-            channels.append(arg[0])
+    if args.all:
+        for channel in plugins:
+            field_list.extend(plugins[channel].__fields__)
+            channels.append(channel)
+    else:
+        args = args._get_kwargs()
+        for arg in args:
+            if arg[1] and arg[0] in plugins:
+                field_list.extend(plugins[arg[0]].__fields__)
+                channels.append(arg[0])
+
     field_list = list(set(field_list))
     if 'Message' in field_list:
         field_list.remove('Message')
