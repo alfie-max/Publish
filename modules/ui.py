@@ -34,6 +34,10 @@ def parse_args(args):
         action = 'store_true',
         help = 'Send via all installed plugins')
     parser.add_argument(
+        '-l', '--list',
+        action = 'store_true',
+        help = 'List all installed plugins')
+    parser.add_argument(
         '--install-plugin', type = str,
         nargs = 1, metavar='',
         help = 'Install new plugin')
@@ -88,6 +92,12 @@ def get_fields_channels(plugins, args):
 
 def check_common_args(args):
     status = False
+    if args.list:
+        status = True
+        plugins = get_plugins()
+        ui_print(colored('Installed Plugins :', 'blue'))
+        for channel in plugins:
+            ui_print(colored(' '*20 + channel.title(), 'blue'))
     if args.install_plugin:
         status = True
         plugin_path =  args.install_plugin[0]
