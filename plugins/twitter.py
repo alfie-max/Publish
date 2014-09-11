@@ -46,6 +46,18 @@ class Twitter(Channel):
         else:
             self.TOKEN = self.TOKEN_SEC = ''
 
+
+    def Reset(self):
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        
+        if not cfg.has_section('Twitter'):
+            cfg.add_section('Twitter')
+        cfg.set('Twitter', 'Token Key', '')
+        cfg.set('Twitter', 'Token Secret', '')
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)
+        
     def Authorize(self):
         ''' Authorize the application with Twitter '''
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)

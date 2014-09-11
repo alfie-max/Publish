@@ -25,6 +25,18 @@ class Blog(Channel):
         else:
             self.url = self.username = self.password = ''
 
+    def Reset(self):
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        if not cfg.has_section('Blog'):
+            cfg.add_section('Blog')
+        cfg.set('Blog', 'URL', '')
+        cfg.set('Blog', 'Username', '')
+        cfg.set('Blog', 'Password', '')
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)
+
+
     def VerifyCredentials(self):
         ''' Tries to access the given URL exists '''       
         self.GetAuthInfo()

@@ -40,7 +40,18 @@ class Email(Channel):
             self.password = unhexlify(cfg.get('Email', 'Password'))
         else:
             self.username = self.password = ''
-                
+
+    def Reset(self):
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        
+        if not cfg.has_section('Email'):
+            cfg.add_section('Email')
+        cfg.set('Email', 'Email Id', '')
+        cfg.set('Email', 'Password', '')
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)
+                        
     def VerifyCredentials(self):
         """ Tries to login with available login info """
         self.SetupServer()

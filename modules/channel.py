@@ -10,7 +10,11 @@ class Channel(object):
     def GetAuthInfo(self):
         ''' Read auth info from .publish file '''
         raise NotImplementedError()
-
+        
+    def Reset(self):
+        ''' Reset channel details from .publish file '''
+        raise NotImplementedError()
+        
     def VerifyCredentials(self):        
         ''' Verify stored auth info and return True/False '''
         raise NotImplementedError()
