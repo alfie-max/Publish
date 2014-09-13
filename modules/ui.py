@@ -107,32 +107,38 @@ def check_common_args(args):
             sys.exit()
         status = True
         plugins = get_plugins()
-        ch = {}
-        ui_print(colored('Installed Plugins :', 'blue'))
-        for i,channel in enumerate(plugins):
-            ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
-            ch[i+1] = channel
-        choices = ui_prompt('Select plugin[s] to reset (separate with spaces) : ').split()
-        for i, choice in enumerate(choices):
-            try:
-                choices[i] = int(choice)
-                if choices[i] in ch:
-                    plugin = plugins[ch[choices[i]]]
-                    plugin.Reset()
-                else:
-                    raise ValueError
-            except ValueError:
-                ui_print(colored('Invalid Entry', 'red'))
-                sys.exit(1)
+        if len(plugins) != 0:
+            ch = {}
+            ui_print(colored('Installed Plugins :', 'blue'))
+            for i,channel in enumerate(plugins):
+                ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
+                ch[i+1] = channel
+            choices = ui_prompt('Select plugin[s] to reset (separate with spaces) : ').split()
+            for i, choice in enumerate(choices):
+                try:
+                    choices[i] = int(choice)
+                    if choices[i] in ch:
+                        plugin = plugins[ch[choices[i]]]
+                        plugin.Reset()
+                    else:
+                        raise ValueError
+                except ValueError:
+                    ui_print(colored('Invalid Entry', 'red'))
+                    sys.exit(1)
+        else:
+            ui_print(colored('No Plugins Installed', 'blue'))
 
     if args.list:
         if status:
             sys.exit()
         status = True
         plugins = get_plugins()
-        ui_print(colored('Installed Plugins :', 'blue'))
-        for channel in plugins:
-            ui_print(colored(' '*20 + channel.title(), 'blue'))
+        if len(plugins) != 0:
+            ui_print(colored('Installed Plugins :', 'blue'))
+            for channel in plugins:
+                ui_print(colored(' '*20 + channel.title(), 'blue'))
+        else:
+            ui_print(colored('No Plugins Installed', 'blue'))
 
     if args.install_plugin:
         if status:
@@ -151,31 +157,34 @@ def check_common_args(args):
             sys.exit()
         status = True
         plugins = get_plugins()
-        ch = {}
-        ui_print(colored('Installed Plugins :', 'blue'))
-        for i,channel in enumerate(plugins):
-            ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
-            ch[i+1] = channel
-        choices = ui_prompt('Select plugin[s] to uninstall (separate with spaces) : ').split()
-        for i, choice in enumerate(choices):
-            try:
-                choices[i] = int(choice)
-                if choices[i] in ch:
-                    paths = []
-                    plugin = plugins[ch[choices[i]]]
-                    module = importlib.import_module(plugin.__module__)
-                    path, filename = split(module.__file__)
-                    filename, ext = splitext(filename)
-                    paths.append(path + os.sep + filename + '.{}'.format('py'))
-                    paths.append(path + os.sep + filename + '.{}'.format('pyc'))
-                    for path in paths:
-                        if exists(path):
-                            os.remove(path)
-                else:
-                    raise ValueError
-            except ValueError:
-                ui_print(colored('Invalid Entry', 'red'))
-                sys.exit(1)
+        if len(plugins) != 0:
+            ch = {}
+            ui_print(colored('Installed Plugins :', 'blue'))
+            for i,channel in enumerate(plugins):
+                ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
+                ch[i+1] = channel
+            choices = ui_prompt('Select plugin[s] to uninstall (separate with spaces) : ').split()
+            for i, choice in enumerate(choices):
+                try:
+                    choices[i] = int(choice)
+                    if choices[i] in ch:
+                        paths = []
+                        plugin = plugins[ch[choices[i]]]
+                        module = importlib.import_module(plugin.__module__)
+                        path, filename = split(module.__file__)
+                        filename, ext = splitext(filename)
+                        paths.append(path + os.sep + filename + '.{}'.format('py'))
+                        paths.append(path + os.sep + filename + '.{}'.format('pyc'))
+                        for path in paths:
+                            if exists(path):
+                                os.remove(path)
+                    else:
+                        raise ValueError
+                except ValueError:
+                    ui_print(colored('Invalid Entry', 'red'))
+                    sys.exit(1)
+        else:
+            ui_print(colored('No Plugins Installed', 'blue'))
 
     if status:
         sys.exit()
