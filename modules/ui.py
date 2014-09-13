@@ -25,7 +25,11 @@ class ThrowingArgumentParser(argparse.ArgumentParser):
 def parse_args(args):
     """ Parse arguments to the app """
     parser = ThrowingArgumentParser()
-    plugins = get_plugins()
+    try:
+        plugins = get_plugins()
+    except Failed, e:
+        ui_print(colored(e.message, 'red'))
+        sys.exit(1)
     for plugin in plugins:
         parser.add_argument(
             '-{}'.format(plugin[0]), '--{}'.format(plugin),
@@ -84,13 +88,19 @@ def get_fields_channels(plugins, args):
     field_list = []
     if args.all:
         for channel in plugins:
-            field_list.extend(plugins[channel].__fields__)
+            try:
+                field_list.extend(plugins[channel].__fields__)
+            except AttributeError:
+                raise Failed("Channel '{}' has no attribute '__fields__'".format(channel))
             channels.append(channel)
     else:
         args = args._get_kwargs()
         for arg in args:
             if arg[1] and arg[0] in plugins:
-                field_list.extend(plugins[arg[0]].__fields__)
+                try:
+                    field_list.extend(plugins[arg[0]].__fields__)
+                except AttributeError:
+                    raise Failed("Channel '{}' has no attribute '__fields__'".format(arg[0]))
                 channels.append(arg[0])
 
     field_list = list(set(field_list))
@@ -106,7 +116,11 @@ def check_common_args(args):
         if status:
             sys.exit()
         status = True
-        plugins = get_plugins()
+        try:
+            plugins = get_plugins()
+        except Failed, e:
+            ui_print(colored(e.message, 'red'))
+            sys,exit(1)
         if len(plugins) != 0:
             ch = {}
             ui_print(colored('Installed Plugins :', 'blue'))
@@ -122,6 +136,9 @@ def check_common_args(args):
                         plugin.Reset()
                     else:
                         raise ValueError
+                except AttributeError:
+                    ui_print(colored("Plugin does't have reset function", 'red'))
+                    sys.exit(1)
                 except ValueError:
                     ui_print(colored('Invalid Entry', 'red'))
                     sys.exit(1)
@@ -132,7 +149,11 @@ def check_common_args(args):
         if status:
             sys.exit()
         status = True
-        plugins = get_plugins()
+        try:
+            plugins = get_plugins()
+        except Failed, e:
+            ui_print(colored(e.message, 'red'))
+            sys,exit(1)
         if len(plugins) != 0:
             ui_print(colored('Installed Plugins :', 'blue'))
             for channel in plugins:
@@ -156,7 +177,11 @@ def check_common_args(args):
         if status:
             sys.exit()
         status = True
-        plugins = get_plugins()
+        try:
+            plugins = get_plugins()
+        except Failed, e:
+            ui_print(colored(e.message, 'red'))
+            sys,exit(1)
         if len(plugins) != 0:
             ch = {}
             ui_print(colored('Installed Plugins :', 'blue'))
@@ -204,11 +229,15 @@ def ui_prompt(msg, mask=None):
 
 def main(args):
     fields = {}
-    plugins = get_plugins()
     args = parse_args(args)
     check_common_args(args)
 
-    field_list, channels = get_fields_channels(plugins, args)
+    try:
+        plugins = get_plugins()
+        field_list, channels = get_fields_channels(plugins, args)
+    except Failed, e:
+        ui_print(colored(e.message, 'red'))
+        sys,exit(1)
 
     (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
     (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
