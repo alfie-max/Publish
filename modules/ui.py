@@ -199,7 +199,7 @@ def ui_prompt(msg, mask=None):
         else:
             return raw_input(colored(msg, 'yellow'))
     except KeyboardInterrupt:
-        print '\n'
+        print '\r'
         sys.exit(1)
 
 def main(args):
