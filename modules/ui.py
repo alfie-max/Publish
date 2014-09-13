@@ -2,15 +2,17 @@ import os
 import sys
 import argparse
 import tempfile
+import importlib
 import subprocess
 
 from getpass import getpass
 from shutil import copyfile
 from termcolor import colored
-from modules.exception import *
-from modules.engine import get_plugins, dispatch
-from configobj import ConfigObj, ConfigObjError
 from validate import Validator
+from modules.exception import *
+from os.path import split, splitext, exists
+from configobj import ConfigObj, ConfigObjError
+from modules.engine import get_plugins, dispatch
 
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
@@ -45,6 +47,10 @@ def parse_args(args):
         '--install-plugin', type = str,
         nargs = 1, metavar='',
         help = 'Install new plugin')
+    parser.add_argument(
+        '--uninstall-plugin',
+        action = 'store_true',
+        help = 'Uninstall plugin')
         
     if len(args) == 0:
         parser.print_help()
@@ -139,6 +145,37 @@ def check_common_args(args):
             copyfile(plugin_path ,plugins_dir)
         else:
             ui_print (colored('File Not Found', 'red'))
+
+    if args.uninstall_plugin:
+        if status:
+            sys.exit()
+        status = True
+        plugins = get_plugins()
+        ch = {}
+        ui_print(colored('Installed Plugins :', 'blue'))
+        for i,channel in enumerate(plugins):
+            ui_print(colored(' '*20 + '{}. '.format(i+1) + channel.title(), 'blue'))
+            ch[i+1] = channel
+        choices = ui_prompt('Select plugin[s] to uninstall (separate with spaces) : ').split()
+        for i, choice in enumerate(choices):
+            try:
+                choices[i] = int(choice)
+                if choices[i] in ch:
+                    paths = []
+                    plugin = plugins[ch[choices[i]]]
+                    module = importlib.import_module(plugin.__module__)
+                    path, filename = split(module.__file__)
+                    filename, ext = splitext(filename)
+                    paths.append(path + os.sep + filename + '.{}'.format('py'))
+                    paths.append(path + os.sep + filename + '.{}'.format('pyc'))
+                    for path in paths:
+                        if exists(path):
+                            os.remove(path)
+                else:
+                    raise ValueError
+            except ValueError:
+                ui_print(colored('Invalid Entry', 'red'))
+                sys.exit(1)
 
     if status:
         sys.exit()
