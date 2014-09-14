@@ -67,8 +67,6 @@ class Twitter(Channel):
 
         try:
             auth_url = auth.get_authorization_url()
-            #print auth_url
-            #return
         except tweepy.error.TweepError:
             raise NetworkError('Unable to access network')
 
