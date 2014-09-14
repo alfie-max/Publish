@@ -53,24 +53,36 @@ class Facebook(Channel):
         except facebook.GraphAPIError:
             return False
 
-        def Authorize(self):
-          """ Get Facebook authentication data """
-        print "Please Authenticate your Facebook Account"
-        self.appid= raw_input("Enter your Facebook APP ID ")
-        self.appsecret  = getpass("App Secret : ")
-        self.profileid = raw_input("Profile ID : ")
-        ''' Update Config file with User login Info '''
-        cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
-        if not cfg.has_section('Facebook'):
-            cfg.add_section('Facebook')
-        cfg.set('Facebook', 'App ID', self.appid)
-        cfg.set('Facebook', 'App Secret', hexlify(self.appsecret))
-        cfg.set('Facebook', 'Password', self.profileid)
-        with open('.publish', 'wb') as configfile:
-            cfg.write(configfile)
-        if not self.VerifyCredentials():
-            raise AuthorizationError(__cname__)
+    def Authorize(self):
+        global ACCESS_TOKEN
+        ACCESS_TOKEN = None
+        ENDPOINT = 'graph.facebook.com'
+        REDIRECT_URI = 'http://127.0.0.1:8080/'
+        
+        ''' Requirements for facebook authentication '''
+        class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                global ACCESS_TOKEN
+
+                code = urlparse.parse_qs(urlparse.urlparse(self.path).query).get('code')
+                code = code[0] if code else None
+                if code is None:
+                    self.wfile.write('Sorry, authentication failed.')
+                    raise AuthorizationError('Authorization Failed')
+                response = get('/oauth/access_token',
+                               {'client_id' : APP_ID,
+                                'redirect_uri' : REDIRECT_URI,
+                                'client_secret' : APP_SEC,
+                                'code' : code})
+
+                ACCESS_TOKEN = urlparse.parse_qs(response)['access_token'][0]
+                self.wfile.write('You have successfully logged in to facebook.'
+                                 'You can close this window now.')
+            def log_message(self, format, *args):
+                return
 
     def VerifyFields(self, fields):
         Message = Facebook['Message']
