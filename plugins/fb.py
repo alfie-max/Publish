@@ -42,19 +42,17 @@ class Facebook(Channel):
             cfg.write(configfile)     
 
     def VerifyCredentials(self):
-        oauth_args = dict(client_id     = self.appid,
-                  client_secret = self.appsecret,
-                  grant_type    = 'client_credentials')
-        oauth_curl_cmd = ['curl',
-                  'https://graph.facebook.com/oauth/access_token?' + urllib.urlencode(oauth_args)]
-        oauth_response = subprocess.Popen(oauth_curl_cmd,
-                                  stdout = subprocess.PIPE,
-                                  stderr = subprocess.PIPE).communicate()[0]
- 
+        self.GetAuthInfo()
+        fb = facebook.GraphAPI()
+        fb.access_token = ACCESS_TOKEN
         try:
-        oauth_access_token = urlparse.parse_qs(str(oauth_response))['access_token'] [0]  
-        except KeyError:
-                return False
+            fb.get_object('me')
+            return True
+        except urllib2.URLError:
+            raise NetworkError('Unable to access network')
+        except facebook.GraphAPIError:
+            return False
+
     def GetKeys(self):
         facebook_graph = facebook.GraphAPI(oauth_access_token)
     def Authorize(self):
