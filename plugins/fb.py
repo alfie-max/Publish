@@ -53,9 +53,7 @@ class Facebook(Channel):
         except facebook.GraphAPIError:
             return False
 
-    def GetKeys(self):
-        facebook_graph = facebook.GraphAPI(oauth_access_token)
-    def Authorize(self):
+        def Authorize(self):
           """ Get Facebook authentication data """
         print "Please Authenticate your Facebook Account"
         self.appid= raw_input("Enter your Facebook APP ID ")
