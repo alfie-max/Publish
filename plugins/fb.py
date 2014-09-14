@@ -32,7 +32,14 @@ class Facebook(Channel):
         else:
             ACCESS_TOKEN = ''
 
-             
+    def Reset(self):
+        cfg = ConfigParser.RawConfigParser()
+        cfg.read('.publish')
+        if not cfg.has_section('Facebook'):
+            cfg.add_section('Facebook')
+        cfg.set('Facebook', 'Access Token', '')
+        with open('.publish', 'wb') as configfile:
+            cfg.write(configfile)     
 
     def VerifyCredentials(self):
         oauth_args = dict(client_id     = self.appid,
