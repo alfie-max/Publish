@@ -134,13 +134,21 @@ class Facebook(Channel):
         else:
             return False
 
-    def SendMsg(self, Message):
+     def SendMsg(self, msg):
+        Message = msg['Message']
+        Message = Message.strip()
+        
+        self.GetAuthInfo()
+        fb = facebook.GraphAPI()
+        fb.access_token = ACCESS_TOKEN
+        ui_print (colored('Sending Facebook Message...', 'blue'))
         try:
-        fb_response = facebook_graph.put_wall_post(Message,profile_id  = self.profileid )
-        print fb_response
-        except facebook.GraphAPIError as e:
-        print 'Something went wrong:'
-
+            fb.put_wall_post(Message)
+            ui_print (colored('Successfully Sent', 'green'))
+        except urllib2.URLError:
+            raise NetworkError('Unable to access network')
+        except facebook.GraphAPIError:
+            ui_print (colored('Sending Failed', 'red'))
  
 
 __plugin__ = Facebook  
