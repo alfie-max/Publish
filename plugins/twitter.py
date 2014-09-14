@@ -24,7 +24,10 @@ class Twitter(Channel):
         
     def VerifyCredentials(self):
         ''' Verify Users Credentials '''
-        self.GetAuthInfo()
+        try:
+            self.GetAuthInfo()
+        except TypeError:
+            return False
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
         auth.set_access_token(self.TOKEN, self.TOKEN_SEC)
         self.api = tweepy.API(auth)
@@ -64,6 +67,8 @@ class Twitter(Channel):
 
         try:
             auth_url = auth.get_authorization_url()
+            #print auth_url
+            #return
         except tweepy.error.TweepError:
             raise NetworkError('Unable to access network')
 
