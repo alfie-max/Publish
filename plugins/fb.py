@@ -84,6 +84,17 @@ class Facebook(Channel):
             def log_message(self, format, *args):
                 return
 
+	def get_url(path, args=None):
+            args = args or {}
+            if ACCESS_TOKEN:
+                args['access_token'] = ACCESS_TOKEN
+            if 'access_token' in args or 'client_secret' in args:
+                endpoint = "https://" + ENDPOINT
+            else:
+                endpoint = "http://" + ENDPOINT
+            return endpoint + path + '?' + urllib.urlencode(args)
+
+
     def VerifyFields(self, fields):
         Message = Facebook['Message']
         Message = Message.strip()
