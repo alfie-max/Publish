@@ -22,22 +22,15 @@ class Facebook(Channel):
         self.__fields__ = ["Message"]   
         
     def GetAuthInfo(self):
-        ''' Read Keys from Config file '''
+         ''' Read Keys from Config file '''
+        global ACCESS_TOKEN
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
-        
+
         if cfg.has_section('Facebook'):
-            self.appid = cfg.get('Facebook', 'Application ID')
-            self.appsecret = unhexlify(cfg.get('Facebook', 'App Secret'))
-            self.profileid = cfg.get('Facebook', 'Profile ID')
-            
+            ACCESS_TOKEN = unhexlify(cfg.get('Facebook', 'Access Token'))            
         else:
-            cfg.add_section('Facebook')
-            cfg.set('Facebook', 'Application ID', '')
-            cfg.set('Facebook', 'App Secret', '')
-            cfg.set('Facebook', 'Profile ID', '')
-            with open('.publish', 'wb') as configfile:
-                cfg.write(configfile)
+            ACCESS_TOKEN = ''
 
              
 
