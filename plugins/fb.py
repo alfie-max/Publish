@@ -126,13 +126,14 @@ class Facebook(Channel):
         if not self.VerifyCredentials():
             raise AuthorizationError('Authorization Failed')
 
-    def VerifyFields(self, fields):
-        Message = Facebook['Message']
+    def VerifyFields(self, msg):
+        Message = msg['Message']
         Message = Message.strip()
         if len(Message) != 0:
             return True
         else:
             return False
+
     def SendMsg(self, Message):
         try:
         fb_response = facebook_graph.put_wall_post(Message,profile_id  = self.profileid )
