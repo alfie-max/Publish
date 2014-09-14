@@ -19,7 +19,7 @@ from modules.ui import ui_print, ui_prompt
 class Facebook(Channel):
         ''' Implements Facebook Api '''
     def __init__(self):
-        self.__fields__ = ["Message"]   # and whatever the plugin requires for sending a message
+        self.__fields__ = ["Message"]   
         
     def GetAuthInfo(self):
         ''' Read Keys from Config file '''
@@ -39,7 +39,7 @@ class Facebook(Channel):
             with open('.publish', 'wb') as configfile:
                 cfg.write(configfile)
 
-           # self.URL = self.USER = ''        
+             
 
     def VerifyCredentials(self):
         oauth_args = dict(client_id     = self.appid,
