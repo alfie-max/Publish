@@ -2,6 +2,7 @@ import os
 import ConfigParser
 import tweepy
 import tempfile
+import cookielib
 
 from termcolor import colored
 from urllib2 import URLError
@@ -75,7 +76,10 @@ class Twitter(Channel):
         password = ui_prompt("Password : ", mask = True)
 
         br = Browser()
+        cj = cookielib.LWPCookieJar()
+        br.set_cookiejar(cj)
         br.set_handle_robots(False)
+        br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
         try:
             br.open(auth_url)
@@ -93,15 +97,29 @@ class Twitter(Channel):
             raise NetworkError('Unable to access network')
 
         content = response.get_data()
-        br.close()
 
         soup = BeautifulSoup(content)
         code = soup.find('code')
 
         if code:
             pin = code.text
+            br.close()
         else:
-            raise AuthorizationError('Authorization Failed')
+            br.form = list(br.forms())[1]
+            try:
+                response = br.submit()
+            except URLError:
+                br.close()
+                raise NetworkError('Unable to access network')
+
+            content = response.get_data()
+            br.close()
+            soup = BeautifulSoup(content)
+            code = soup.find('code')
+            if code:
+                pin = code.text
+            else:
+                raise AuthorizationError('Authorization Failed')
 
         try:
             auth.get_access_token(pin)
