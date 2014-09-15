@@ -20,3 +20,6 @@ def test_SendMsg():
 
 def test_Authorize():
     mail.Authorize()
+
+def test_reset():
+    mail.Reset()

@@ -29,3 +29,6 @@ def test_SendMsg():
 def test_SendMsg_as_img():
     T.SendMsg({'Message':"""This is a long message to test sending as image.
     Make this long and long and long..... yes its really long"""})
+
+def test_reset():
+    T.Reset()

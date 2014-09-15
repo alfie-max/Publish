@@ -21,3 +21,6 @@ def test_VerifyCredentials():
 
 def test_Authorize():
     blog.Authorize()
+
+def test_reset():
+    blog.Reset()

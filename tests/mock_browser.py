@@ -8,6 +8,9 @@ class Browser(object):
     def set_handle_robots(self, status):
         pass
 
+    def set_cookiejar(self, cj):
+        pass
+
     def forms(self):
         forms = [{'session[username_or_email]':'', 'session[password]':''}]
         return forms
