@@ -101,9 +101,6 @@ def get_fields_channels(plugins, args):
     Takes in a dict with plugin name and corresponding object and arguments.
     Returns fields required by channels and channels passed in arguments.
     '''
-    print plugins
-    print args
-    return
     channels = []
     field_list = []
     if args.all:
@@ -274,7 +271,7 @@ def main(args):
         field_list, channels = get_fields_channels(plugins, args)
     except Failed, e:
         ui_print(colored(e.message, 'red'))
-        sys,exit(1)
+        sys.exit(1)
 
     (fn, cfgFile) = tempfile.mkstemp() # File to hold the message details
     (fn, cfgSpec) = tempfile.mkstemp() # File to hold the message specs
