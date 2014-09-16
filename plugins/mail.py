@@ -1,11 +1,11 @@
-import ConfigParser
 import smtplib
+import ConfigParser
 
 from termcolor import colored
 from socket import gaierror, error
-from modules.ui import ui_print, ui_prompt
 from modules.exception import *
 from modules.channel import Channel
+from modules.ui import ui_print, ui_prompt
 from binascii import hexlify, unhexlify
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
@@ -14,10 +14,13 @@ from email.MIMEMultipart import MIMEMultipart
 class Email(Channel):
     ''' Implements an Email Api '''
     def __init__(self):
+        ''' Email class Constructor '''
         self.__fields__ = ['Subject', 'To_Email', 'Message']
 
     def SetupServer(self):
-        """ Setup the mail server """
+        '''
+        Setups gmail server for sending mail.
+        '''
         try:
             self.server = smtplib.SMTP('smtp.gmail.com:587')
         except (smtplib.SMTPException, gaierror, error):
@@ -31,7 +34,9 @@ class Email(Channel):
             return False
 
     def GetAuthInfo(self):
-        """ Read user login info from file """
+        '''
+        Reads authentication data required from config file
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
 
@@ -42,6 +47,9 @@ class Email(Channel):
             self.username = self.password = ''
 
     def Reset(self):
+        '''
+        Resets auth data in config file
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
@@ -53,7 +61,10 @@ class Email(Channel):
             cfg.write(configfile)
                         
     def VerifyCredentials(self):
-        """ Tries to login with available login info """
+        '''
+        Verifies Users Credentials stored in the config file.
+        Returns True/False
+        '''
         self.SetupServer()
         self.GetAuthInfo()
         try:
@@ -63,7 +74,9 @@ class Email(Channel):
             return False
 
     def ComposeMail(self, Subject, toAddr, Message):
-        """  Compose an email message"""
+        '''
+        Composes mail object using passed parameters and returns it
+        '''
         mail = MIMEMultipart()
         mail['From'] = self.username
         mail['To'] = toAddr
@@ -72,7 +85,9 @@ class Email(Channel):
         return mail.as_string()
 
     def Authorize(self):
-        """ Get user mail authentication data """
+        '''
+        Authorize the application with Gmail.
+        '''
         ui_print (colored('Authorizing Email Account...', 'yellow'))
         self.username = ui_prompt("Username : ")
         self.password = ui_prompt("Password : ", mask = True)
@@ -92,6 +107,9 @@ class Email(Channel):
             raise AuthorizationError('Authorization Failed')
 
     def VerifyFields(self, Mail):
+        '''
+        Verifies passed fields to follow requirements of Gmail
+        '''
         Message = Mail['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -100,7 +118,9 @@ class Email(Channel):
             return False
 
     def SendMsg(self, Mail):
-        """ Send mail to given addresses """
+        '''
+        Sent Message to Email.
+        '''
         Subject = Mail['Subject']
         To_Email = Mail['To_Email']
         if isinstance(To_Email,str):

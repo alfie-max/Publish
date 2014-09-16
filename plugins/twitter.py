@@ -8,23 +8,27 @@ from termcolor import colored
 from urllib2 import URLError
 from mechanize import Browser
 from bs4 import BeautifulSoup
-from modules.ui import ui_print, ui_prompt
 from modules.consumer import *
 from modules.exception import *
 from modules.channel import Channel
+from modules.ui import ui_print, ui_prompt
 from binascii import hexlify, unhexlify
 from PIL import Image, ImageDraw, ImageFont
 
 
 class Twitter(Channel):
-    ''' Implements Twitter Api '''
+    ''' Implementation of Twitter Api '''
     def __init__(self):
+        ''' Twitter class Constructor '''
         self.CON_KEY = unhexlify(CKEY)
         self.CON_SEC = unhexlify(CSEC)
         self.__fields__ = ['Message']
         
     def VerifyCredentials(self):
-        ''' Verify Users Credentials '''
+        '''
+        Verifies Users Credentials stored in the config file.
+        Returns True/False
+        '''
         try:
             self.GetAuthInfo()
         except TypeError:
@@ -40,7 +44,9 @@ class Twitter(Channel):
             return False
 
     def GetAuthInfo(self):
-        ''' Read Keys from Config file '''
+        '''
+        Read Stored API Keys from config file.
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
@@ -52,6 +58,9 @@ class Twitter(Channel):
 
 
     def Reset(self):
+        '''
+        Resets stored API Keys in config file to None.
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
@@ -63,7 +72,9 @@ class Twitter(Channel):
             cfg.write(configfile)
         
     def Authorize(self):
-        ''' Authorize the application with Twitter '''
+        '''
+        Authorize the application with Twitter.
+        '''
         auth = tweepy.OAuthHandler(self.CON_KEY, self.CON_SEC)
 
         try:
@@ -75,12 +86,14 @@ class Twitter(Channel):
         username = ui_prompt("Username : ")
         password = ui_prompt("Password : ", mask = True)
 
+        ''' Initialize mechanize browser instance '''
         br = Browser()
         cj = cookielib.LWPCookieJar()
         br.set_cookiejar(cj)
         br.set_handle_robots(False)
         br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
+        ''' Opens browser and authenticate account '''
         try:
             br.open(auth_url)
         except URLError:
@@ -143,7 +156,9 @@ class Twitter(Channel):
             raise AuthorizationError('Authorization Failed')
 
     def Text2Img(self, Message):
-        ''' Creates an image containing the Message '''
+        '''
+        Creates an image containing the Message.
+        '''
         fontname = 'plugins/Tahoma.ttf'
         fontsize = 22
         textColor = (102,117,127)
@@ -165,7 +180,9 @@ class Twitter(Channel):
         return filePath
         
     def IntelliDraw(self, msg, font, maxWidth):
-        ''' Slices the Message and creates paragraphs '''
+        '''
+        Slices a long message and creates paragraphs.
+        '''
         testimg = Image.new('RGB', (1024, 728))
         drawer = ImageDraw.Draw(testimg)
         words = msg.split()
@@ -195,6 +212,9 @@ class Twitter(Channel):
         return (lines, width, height)
 
     def Tweet(self, Message):
+        '''
+        Handles Sending of message
+        '''
         try:
             self.api.update_status(Message)
             return True
@@ -209,6 +229,9 @@ class Twitter(Channel):
                 return False
 
     def VerifyFields(self, msg):
+        '''
+        Verifies passed fields to follow requirements of Twitter.
+        '''
         Message = msg['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -217,8 +240,9 @@ class Twitter(Channel):
             return False
 
     def SendMsg(self, msg):
-
-        ''' Sent Message to Twitter '''
+        '''
+        Sent Message to Twitter.
+        '''
         Message = msg['Message']
         Message = Message.strip()
         

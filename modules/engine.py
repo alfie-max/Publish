@@ -6,6 +6,10 @@ from os.path import basename, splitext
 PLUGINS_DIR = "./plugins"
 
 def get_plugins(plugins_dir = PLUGINS_DIR):
+    '''(directory) -> dict
+
+    Returns a dict containing plugin name and corresponding plugin object.
+    '''
     plugins = {}
     plugin_files = glob.glob("{}/*.py".format(plugins_dir))
     for plugin_file in plugin_files:
@@ -25,6 +29,13 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
     return plugins
 
 def dispatch(plugin, fields):
+    '''(object, list)
+
+    Verifies the given fields with the plugin.
+    Authenticates user account.
+    Passes required fields to given plugin object.
+    Finally sends message.
+    '''
     try:
         if not plugin.VerifyFields(fields):
             raise Failed('Invalid Fields')

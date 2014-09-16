@@ -19,12 +19,15 @@ APP_SEC = unhexlify(APP_SEC)
 ACCESS_TOKEN = None
 
 class Facebook(Channel):
-    ''' Implememts facebook Api '''
+    ''' Implememts Facebook Api '''
     def __init__(self):
+        ''' Facebook class Constructor '''
         self.__fields__ = ['Message']
 
     def GetAuthInfo(self):
-        ''' Read Keys from Config file '''
+        '''
+        Reads authentication data required from config file
+        '''
         global ACCESS_TOKEN
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
@@ -35,6 +38,9 @@ class Facebook(Channel):
             ACCESS_TOKEN = ''
             
     def Reset(self):
+        '''
+        Resets auth data in config file
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         if not cfg.has_section('Facebook'):
@@ -44,6 +50,10 @@ class Facebook(Channel):
             cfg.write(configfile)
 
     def VerifyCredentials(self):
+        '''
+        Verifies Users Credentials stored in the config file.
+        Returns True/False
+        '''
         self.GetAuthInfo()
         fb = facebook.GraphAPI()
         fb.access_token = ACCESS_TOKEN
@@ -56,12 +66,15 @@ class Facebook(Channel):
             return False
         
     def Authorize(self):
+        '''
+        Authorize the application with Facebook.
+        '''
         global ACCESS_TOKEN
         ACCESS_TOKEN = None
         ENDPOINT = 'graph.facebook.com'
         REDIRECT_URI = 'http://127.0.0.1:8080/'
         
-        ''' Requirements for facebook authentication '''
+        ''' Requirements for Facebook Authentication '''
         class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             def do_GET(self):
                 self.send_response(200)
@@ -105,6 +118,8 @@ class Facebook(Channel):
                            {'client_id' : APP_ID,
                             'redirect_uri' : REDIRECT_URI,
                             'scope' : 'publish_actions'})
+
+        ''' Silence webbrowser messages '''
         savout = os.dup(1)
         os.close(1)
         os.open(os.devnull, os.O_RDWR)
@@ -130,6 +145,9 @@ class Facebook(Channel):
             raise AuthorizationError('Authorization Failed')
 
     def VerifyFields(self, msg):
+        '''
+        Verifies passed fields to follow requirements of Facebook.
+        '''
         Message = msg['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -138,6 +156,9 @@ class Facebook(Channel):
             return False
 
     def SendMsg(self, msg):
+        '''
+        Sent Message to Facebook.
+        '''
         Message = msg['Message']
         Message = Message.strip()
         

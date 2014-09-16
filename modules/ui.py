@@ -16,14 +16,18 @@ from modules.engine import get_plugins, dispatch
 
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
-    """ Overrides argparse error function and
-    Handles conditions like invalid arguments"""
+    '''Overrides argparse error function and Handles conditions 
+    like invalid arguments.
+    '''
     def error(self, message):
         self.print_help()
         sys.exit()
 
 def parse_args(args):
-    """ Parse arguments to the app """
+    '''(list) -> object
+
+    Returns an argument parser object with given arguments.
+    '''
     parser = ThrowingArgumentParser()
     try:
         plugins = get_plugins()
@@ -63,7 +67,11 @@ def parse_args(args):
     return parser.parse_args(args)
 
 def add_field(field, fieldType, cfgFile, cfgSpec):
-    """ Adds a field into config file """
+    '''(string, string, file, file)
+    
+    Writes into first file empty fields and writes specification
+    details of the file in the second file.
+    '''
     config = ConfigObj(cfgFile, write_empty_values = True)
     config[field] = ''
     config.write()
@@ -73,7 +81,11 @@ def add_field(field, fieldType, cfgFile, cfgSpec):
     spec.write()
 
 def validate_configfile(cfgFile, cfgSpec):
-    """ Validates the config file content types """
+    '''(file, file) => bool
+
+    Verifies whether the first file contents are met with its specification
+    Returns the verification result as True/False.
+    '''
     try:
         config = ConfigObj(cfgFile, configspec = cfgSpec)
     except ConfigObjError:
@@ -84,6 +96,14 @@ def validate_configfile(cfgFile, cfgSpec):
     return result
 
 def get_fields_channels(plugins, args):
+    '''(dict, object) -> (list, list)
+
+    Takes in a dict with plugin name and corresponding object and arguments.
+    Returns fields required by channels and channels passed in arguments.
+    '''
+    print plugins
+    print args
+    return
     channels = []
     field_list = []
     if args.all:
@@ -111,6 +131,11 @@ def get_fields_channels(plugins, args):
     return field_list, channels
 
 def check_common_args(args):
+    ''' (list)
+
+    Checks if any common arguments were passed as arguments.
+    (common arguments being all arguments other than sending a message)
+    '''
     status = False
     if args.reset_plugin:
         if status:
@@ -215,9 +240,17 @@ def check_common_args(args):
         sys.exit()
         
 def ui_print(msg):
+    '''(string)
+
+    Prints given string to UI.
+    '''
     print msg
 
-def ui_prompt(msg, mask=None):
+def ui_prompt(msg, mask=False):
+    ''' (string, bool)
+    
+    Function to prompt user for input via UI.
+    '''
     try:
         if mask:
             return getpass(colored(msg, 'yellow'))
@@ -228,6 +261,10 @@ def ui_prompt(msg, mask=None):
         sys.exit(1)
 
 def main(args):
+    '''(list)
+    
+    Main function
+    '''
     fields = {}
     args = parse_args(args)
     check_common_args(args)

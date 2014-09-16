@@ -11,10 +11,13 @@ from binascii import hexlify, unhexlify
 class Blog(Channel):
     ''' Implements a Blog Api '''
     def __init__(self):
+        ''' Blog class Constructor '''
         self.__fields__ = ["Message","Title"]    
 
     def GetAuthInfo(self):
-        ''' Read Keys from Config file '''
+        '''
+        Reads authentication data required from config file
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         
@@ -26,6 +29,9 @@ class Blog(Channel):
             self.url = self.username = self.password = ''
 
     def Reset(self):
+        '''
+        Resets auth data in config file
+        '''
         cfg = ConfigParser.RawConfigParser()
         cfg.read('.publish')
         if not cfg.has_section('Blog'):
@@ -38,7 +44,10 @@ class Blog(Channel):
 
 
     def VerifyCredentials(self):
-        ''' Tries to access the given URL exists '''       
+        '''
+        Verifies Users Credentials stored in the config file.
+        Returns True/False
+        '''
         self.GetAuthInfo()
         try:
             server = xmlrpclib.ServerProxy(self.url)
@@ -54,7 +63,9 @@ class Blog(Channel):
             return False
     
     def Authorize(self):
-        ''' Get user blog authentication data '''
+        '''
+        Authorize the application with Blog.
+        '''
         ui_print (colored('Authorizing Blog Account...', 'yellow'))
         self.url = ui_prompt("Blog URL : ")
         self.username = ui_prompt("Username : ")
@@ -75,6 +86,9 @@ class Blog(Channel):
             raise AuthorizationError('Authorization Failed')
        
     def VerifyFields(self, Blog):
+        '''
+        Verifies passed fields to follow requirements of Blog.
+        '''
         Message = Blog['Message']
         Message = Message.strip()
         if len(Message) != 0:
@@ -83,6 +97,9 @@ class Blog(Channel):
             return False
  
     def SendMsg(self, Blog):
+        '''
+        Sent Message to Blog.
+        '''
         blogid = ""
         status_published = 1
         title = Blog['Title']
