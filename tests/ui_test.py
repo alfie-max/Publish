@@ -50,3 +50,24 @@ def test_ui_prompt():
     ui.ui_prompt('Hello', mask = True)
 def copyfile(dir1, dir2):
     pass
+
+def test_all():
+    ui.main(['--all'])
+
+def test_uninstall_plugin():
+    try:
+        ui.main(['--uninstall-plugin'])
+    except SystemExit:
+        pass
+
+def test_list():
+    try:
+        ui.main(['--list'])
+    except SystemExit:
+        pass
+
+def test_reset_plugin():
+    try:
+        ui.main(['--reset-plugin'])
+    except SystemExit:
+        pass
