@@ -16,7 +16,14 @@ def get_plugins(plugins_dir = PLUGINS_DIR):
     return plugins
 
 def raw_input(msg):
-    return ''
+    return '1'
 
 def getpass(msg):
     return ''
+
+def remove(path):
+    pass
+
+class Failed(Exception):
+    pass
+

@@ -9,6 +9,7 @@ from configobj import ConfigObj
 ui.get_plugins = mock_engine.get_plugins
 ui.raw_input = mock_engine.raw_input
 ui.getpass = mock_engine.getpass
+ui.os.remove = mock_engine.remove
 
 def test_known_args():
     ui.parse_args(['--twitter'])

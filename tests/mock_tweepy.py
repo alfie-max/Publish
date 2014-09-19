@@ -1,4 +1,5 @@
-class OAuthHandler(object):
+import tweepy
+class OAuthHandler(tweepy.OAuthHandler):
 
    def __init__(self, consumer_key, consumer_secret, callback=None, secure=True):
        self.access_token = self.Access_Token()
@@ -19,23 +20,24 @@ class OAuthHandler(object):
          self.key = ''
          self.secret = ''
    
-class API(object):
+class error(tweepy.TweepError):
+   def __init__(self):pass
+   class TweepError(Exception):pass
+
+class API(tweepy.OAuthHandler):
    
-    def __init__(self, auth):
-        pass
+   def __init__(self, auth):
+      pass
       
-    def verify_credentials(self):
-        pass
+   def verify_credentials(self):
+      pass
 
-    def update_status(self, msg):
-        if len(msg) > 25:
-            raise error.TweepError
+   def update_status(self, msg):
+      if len(msg) > 25:
+         raise error.TweepError
 
-    def update_with_media(self, msg):
-        pass
-
-class error(object):
-    class TweepError(Exception): pass
+   def update_with_media(self, msg):
+      pass
 
 def ui_prompt(msg, mask=None):
    return ''
