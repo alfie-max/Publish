@@ -110,12 +110,20 @@ class Email(Channel):
         '''
         Verifies passed fields to follow requirements of Gmail
         '''
+        To_Email = Mail['To_Email']
+        if len(To_Email) !=0:
+            status = True
+        else:
+            return False
+
         Message = Mail['Message']
         Message = Message.strip()
         if len(Message) != 0:
-            return True
+            status = True
         else:
             return False
+
+        return status
 
     def SendMsg(self, Mail):
         '''
