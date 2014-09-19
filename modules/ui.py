@@ -295,6 +295,6 @@ def main(args):
                 except Failed, e:
                     ui_print(colored(e.message, 'red'))
     else:
-        ui_print (clored('Input file validation failed'), 'red')
+        ui_print (colored('Input file validation failed', 'red'))
         os.unlink(cfgFile)
         sys.exit(1)
