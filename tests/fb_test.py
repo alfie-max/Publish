@@ -2,9 +2,12 @@ import pytest
 from ..plugins import fb
 import mock_facebook
 import mock_webbrowser
+import mock_cfg
 
+fb.ConfigParser = mock_cfg
 fb.facebook = mock_facebook
 fb.webbrowser = mock_webbrowser
+fb.__cfgfile__ = 'tests/.publish'
 
 F = fb.Facebook()
 

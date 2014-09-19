@@ -1,7 +1,11 @@
 from ..plugins import mail
 import mock_smtplib
+import mock_cfg
+
 mail.smtplib = mock_smtplib
 mail.ui_prompt = mock_smtplib.ui_prompt
+mail.ConfigParser = mock_cfg
+mail.__cfgfile__ = 'tests/.publish'
 
 mail = mail.Email()
 

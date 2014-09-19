@@ -1,10 +1,13 @@
 from ..plugins import twitter
 from mock_browser import Browser
 import mock_tweepy
+import mock_cfg
 
+twitter.ConfigParser = mock_cfg
 twitter.tweepy = mock_tweepy
 twitter.Browser = Browser
 twitter.ui_prompt = mock_tweepy.ui_prompt
+twitter.__cfgfile__ = 'tests/.publish'
 
 T = twitter.Twitter()
 
