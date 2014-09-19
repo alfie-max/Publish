@@ -38,7 +38,7 @@ class Email(Channel):
         Reads authentication data required from config file
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
 
         if cfg.has_section('Email'):
             self.username = cfg.get('Email', 'Email Id')
@@ -51,13 +51,13 @@ class Email(Channel):
         Resets auth data in config file
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         
         if not cfg.has_section('Email'):
             cfg.add_section('Email')
         cfg.set('Email', 'Email Id', '')
         cfg.set('Email', 'Password', '')
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
                         
     def VerifyCredentials(self):
@@ -95,12 +95,12 @@ class Email(Channel):
         
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Email'):
             cfg.add_section('Email')
         cfg.set('Email', 'Email Id', self.username)
         cfg.set('Email', 'Password', hexlify(self.password))
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
@@ -151,3 +151,4 @@ class Email(Channel):
 
 __plugin__ = Email
 __cname__ = 'email'
+__cfgfile__ = '.publish'

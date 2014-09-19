@@ -19,7 +19,7 @@ class Blog(Channel):
         Reads authentication data required from config file
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         
         if cfg.has_section('Blog'):
             self.url = cfg.get('Blog', 'URL')
@@ -33,15 +33,14 @@ class Blog(Channel):
         Resets auth data in config file
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Blog'):
             cfg.add_section('Blog')
         cfg.set('Blog', 'URL', '')
         cfg.set('Blog', 'Username', '')
         cfg.set('Blog', 'Password', '')
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
-
 
     def VerifyCredentials(self):
         '''
@@ -73,13 +72,13 @@ class Blog(Channel):
 
         ''' Update Config file with User login Info '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Blog'):
             cfg.add_section('Blog')
         cfg.set('Blog', 'URL', self.url)
         cfg.set('Blog', 'Username', self.username)
         cfg.set('Blog', 'Password', hexlify(self.password))
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
@@ -121,3 +120,4 @@ class Blog(Channel):
 
 __plugin__ = Blog 
 __cname__ = "blog"      
+__cfgfile__ = '.publish'

@@ -48,7 +48,7 @@ class Twitter(Channel):
         Read Stored API Keys from config file.
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         
         if cfg.has_section('Twitter'):
             self.TOKEN = unhexlify(cfg.get('Twitter', 'Token Key'))
@@ -62,13 +62,13 @@ class Twitter(Channel):
         Resets stored API Keys in config file to None.
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         
         if not cfg.has_section('Twitter'):
             cfg.add_section('Twitter')
         cfg.set('Twitter', 'Token Key', '')
         cfg.set('Twitter', 'Token Secret', '')
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
         
     def Authorize(self):
@@ -144,12 +144,12 @@ class Twitter(Channel):
  
         ''' Update Config file with Token Keys '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Twitter'):
             cfg.add_section('Twitter')
         cfg.set('Twitter', 'Token Key', hexlify(self.TOKEN))
         cfg.set('Twitter', 'Token Secret', hexlify(self.TOKEN_SEC))
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
@@ -258,3 +258,4 @@ class Twitter(Channel):
 
 __plugin__ = Twitter
 __cname__ = 'twitter'
+__cfgfile__ = '.publish'

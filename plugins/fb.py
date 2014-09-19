@@ -30,7 +30,7 @@ class Facebook(Channel):
         '''
         global ACCESS_TOKEN
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
 
         if cfg.has_section('Facebook'):
             ACCESS_TOKEN = unhexlify(cfg.get('Facebook', 'Access Token'))            
@@ -42,11 +42,11 @@ class Facebook(Channel):
         Resets auth data in config file
         '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Facebook'):
             cfg.add_section('Facebook')
         cfg.set('Facebook', 'Access Token', '')
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
 
     def VerifyCredentials(self):
@@ -134,11 +134,11 @@ class Facebook(Channel):
 
         ''' Update Config file with Token Keys '''
         cfg = ConfigParser.RawConfigParser()
-        cfg.read('.publish')
+        cfg.read(__cfgfile__)
         if not cfg.has_section('Facebook'):
             cfg.add_section('Facebook')
         cfg.set('Facebook', 'Access Token', hexlify(ACCESS_TOKEN))
-        with open('.publish', 'wb') as configfile:
+        with open(__cfgfile__, 'wb') as configfile:
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
@@ -176,3 +176,4 @@ class Facebook(Channel):
 
 __plugin__ = Facebook
 __cname__ = 'facebook'
+__cfgfile__ = '.publish'
