@@ -13,13 +13,13 @@ def test_verifyCredentials():
     mail.VerifyCredentials()
 
 def test_Verifyfields():
-    mail.VerifyFields({'Message':'Test Message'})
+    mail.VerifyFields({'Message':'Test Message', 'To_Email':'id'})
 
 def test_Verifyfields_fail():
-    mail.VerifyFields({'Message':''})
+    mail.VerifyFields({'Message':'', 'To_Email':''})
 
 def test_SendMsg():
-    Mail = {'Message':'Some Message', 'Subject':'', 'To_Email':''}
+    Mail = {'Message':'Some Message', 'Subject':'', 'To_Email':'id'}
     mail.SendMsg(Mail)
 
 def test_Authorize():
