@@ -10,6 +10,7 @@ import BaseHTTPServer
 from modules.consumer import *
 from modules.exception import *
 from termcolor import colored
+from os.path import expanduser
 from modules.channel import Channel
 from binascii import hexlify, unhexlify
 from modules.ui import ui_print, ui_prompt
@@ -177,4 +178,4 @@ class Facebook(Channel):
 
 __plugin__ = Facebook
 __cname__ = 'facebook'
-__cfgfile__ = '.publish'
+__cfgfile__ = expanduser('~') + '/.publish'

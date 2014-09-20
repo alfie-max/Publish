@@ -1,13 +1,14 @@
-import os
 import ConfigParser
 import tweepy
 import tempfile
 import cookielib
 
-from termcolor import colored
+from os import unlink
 from urllib2 import URLError
+from termcolor import colored
 from mechanize import Browser
 from bs4 import BeautifulSoup
+from os.path import expanduser
 from modules.consumer import *
 from modules.exception import *
 from modules.channel import Channel
@@ -223,10 +224,10 @@ class Twitter(Channel):
             Image = self.Text2Img(Message)
             try:
                 self.api.update_with_media(Image)
-                os.unlink(Image)
+                unlink(Image)
                 return True
             except tweepy.error.TweepError:
-                os.unlink(Image)
+                unlink(Image)
                 return False
 
     def VerifyFields(self, msg):
@@ -259,4 +260,4 @@ class Twitter(Channel):
 
 __plugin__ = Twitter
 __cname__ = 'twitter'
-__cfgfile__ = '.publish'
+__cfgfile__ = expanduser('~') + '/.publish'

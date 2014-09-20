@@ -2,6 +2,7 @@ import smtplib
 import ConfigParser
 
 from termcolor import colored
+from os.path import expanduser
 from socket import gaierror, error
 from modules.exception import *
 from modules.channel import Channel
@@ -160,4 +161,4 @@ class Email(Channel):
 
 __plugin__ = Email
 __cname__ = 'email'
-__cfgfile__ = '.publish'
+__cfgfile__ = expanduser('~') + '/.publish'

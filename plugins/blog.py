@@ -1,12 +1,13 @@
 import xmlrpclib
 import ConfigParser
 
-from termcolor import colored
 from socket import gaierror
-from modules.ui import ui_print, ui_prompt
-from modules.channel import Channel
-from modules.exception import *
+from termcolor import colored
+from os.path import expanduser
 from binascii import hexlify, unhexlify
+from modules.exception import *
+from modules.channel import Channel
+from modules.ui import ui_print, ui_prompt
 
 class Blog(Channel):
     ''' Implements a Blog Api '''
@@ -121,4 +122,4 @@ class Blog(Channel):
 
 __plugin__ = Blog 
 __cname__ = "blog"      
-__cfgfile__ = '.publish'
+__cfgfile__ = expanduser('~') + '/.publish'
