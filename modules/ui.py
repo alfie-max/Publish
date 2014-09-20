@@ -269,6 +269,8 @@ def main(args):
     try:
         plugins = get_plugins()
         field_list, channels = get_fields_channels(plugins, args)
+        if len(channels) == 0:
+            raise Failed('No Plugins Installed')
     except Failed, e:
         ui_print(colored(e.message, 'red'))
         sys.exit(1)
@@ -278,7 +280,7 @@ def main(args):
 
     for field in field_list:
         add_field(field, 'string', cfgFile, cfgSpec)
-
+    
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
     if validate_configfile(cfgFile, cfgSpec):
         config = ConfigObj(cfgFile)
