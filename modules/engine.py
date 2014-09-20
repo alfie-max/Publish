@@ -1,9 +1,11 @@
 import glob
 import importlib
 from modules.exception import *
-from os.path import basename, splitext
+from os.path import basename, splitext, dirname, realpath
 
-PLUGINS_DIR = "./plugins"
+
+dir_name = basename(dirname(__file__))
+PLUGINS_DIR = dirname(__file__)[:-len(dir_name)] + 'plugins/'
 
 def get_plugins(plugins_dir = PLUGINS_DIR):
     '''(directory) -> dict

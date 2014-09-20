@@ -10,9 +10,9 @@ from shutil import copyfile
 from termcolor import colored
 from validate import Validator
 from modules.exception import *
-from os.path import split, splitext, exists
 from configobj import ConfigObj, ConfigObjError
-from modules.engine import get_plugins, dispatch
+from modules.engine import get_plugins, dispatch, PLUGINS_DIR
+from os.path import split, splitext, exists, dirname, realpath
 
 
 class ThrowingArgumentParser(argparse.ArgumentParser):
@@ -48,15 +48,15 @@ def parse_args(args):
         action = 'store_true',
         help = 'List all installed plugins')
     parser.add_argument(
-        '-r', '--reset-plugin',
+        '-r', '--reset',
         action = 'store_true',
         help = "Reset plugin's saved config")
     parser.add_argument(
-        '--install-plugin', type = str,
+        '-i', '--install', type = str,
         nargs = 1, metavar='',
         help = 'Install new plugin')
     parser.add_argument(
-        '--uninstall-plugin',
+        '-u', '--uninstall',
         action = 'store_true',
         help = 'Uninstall plugin')
         
@@ -134,7 +134,7 @@ def check_common_args(args):
     (common arguments being all arguments other than sending a message)
     '''
     status = False
-    if args.reset_plugin:
+    if args.reset:
         if status:
             sys.exit()
         status = True
@@ -183,19 +183,19 @@ def check_common_args(args):
         else:
             ui_print(colored('No Plugins Installed', 'blue'))
 
-    if args.install_plugin:
+    if args.install:
         if status:
             sys.exit()
         status = True
-        plugin_path =  args.install_plugin[0]
+        plugin_path =  args.install[0]
         if os.path.isfile(plugin_path):
             plugin = os.path.basename(plugin_path)
-            plugins_dir = os.getcwd() + '/plugins/' + plugin
+            plugins_dir = PLUGINS_DIR + plugin
             copyfile(plugin_path ,plugins_dir)
         else:
             ui_print (colored('File Not Found', 'red'))
 
-    if args.uninstall_plugin:
+    if args.uninstall:
         if status:
             sys.exit()
         status = True
@@ -262,7 +262,6 @@ def main(args):
     
     Main function
     '''
-    fields = {}
     args = parse_args(args)
     check_common_args(args)
 
@@ -283,6 +282,7 @@ def main(args):
     
     subprocess.call('%s %s' % (os.getenv('EDITOR'), cfgFile), shell = True)
     if validate_configfile(cfgFile, cfgSpec):
+        fields = {}
         config = ConfigObj(cfgFile)
         for field in field_list:
             fields[field] = config[field]
