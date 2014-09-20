@@ -1,1 +1,8 @@
+include README.md
+
 recursive-exclude tests *
+
+# Patterns to exclude from any directory
+global-exclude *~
+global-exclude *.pyo
+global-exclude *.pyc
