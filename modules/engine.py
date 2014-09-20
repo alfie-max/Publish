@@ -52,6 +52,8 @@ def dispatch(plugin, fields):
                 raise Failed("'Authorize' function not defined")
             except (AuthorizationError, NetworkError), e:
                 raise Failed(e.message)
+            except KeyboardInterrupt:
+                raise Failed(' Operation Aborted')
     except (AttributeError, TypeError):
         raise Failed("'VerifyCredentials' function not defined")
     except NetworkError, e:
@@ -68,3 +70,5 @@ def dispatch(plugin, fields):
         raise Failed("'SendMsg' function not defined")
     except NetworkError, e:
         raise Failed(e.message)
+    except KeyboardInterrupt:
+        raise Failed(' Operation Aborted')

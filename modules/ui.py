@@ -248,14 +248,10 @@ def ui_prompt(msg, mask=False):
     
     Function to prompt user for input via UI.
     '''
-    try:
-        if mask:
-            return getpass(colored(msg, 'yellow'))
-        else:
-            return raw_input(colored(msg, 'yellow'))
-    except KeyboardInterrupt:
-        print '\r'
-        sys.exit(1)
+    if mask:
+        return getpass(colored(msg, 'yellow'))
+    else:
+        return raw_input(colored(msg, 'yellow'))
 
 def main(args):
     '''(list)
