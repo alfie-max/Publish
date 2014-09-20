@@ -153,6 +153,7 @@ class Twitter(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
+            self.Reset()
             raise AuthorizationError('Authorization Failed')
 
     def Text2Img(self, Message):

@@ -142,6 +142,7 @@ class Facebook(Channel):
             cfg.write(configfile)
 
         if not self.VerifyCredentials():
+            self.Reset()
             raise AuthorizationError('Authorization Failed')
 
     def VerifyFields(self, msg):
