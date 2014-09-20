@@ -33,13 +33,13 @@ def test_install_plugin():
     try:
         ui.copyfile = copyfile
         (fn, tmpFile) = tempfile.mkstemp()
-        ui.main(['--install-plugin', tmpFile])
+        ui.main(['--install', tmpFile])
     except SystemExit:
         os.unlink(tmpFile)
 
 def test_install_plugin_fail():
     try:
-        ui.main(['--install-plugin', 'path'])
+        ui.main(['--install', 'path'])
     except SystemExit:
         pass
 
@@ -57,7 +57,7 @@ def test_all():
 
 def test_uninstall_plugin():
     try:
-        ui.main(['--uninstall-plugin'])
+        ui.main(['--uninstall'])
     except SystemExit:
         pass
 
@@ -69,6 +69,6 @@ def test_list():
 
 def test_reset_plugin():
     try:
-        ui.main(['--reset-plugin'])
+        ui.main(['--reset'])
     except SystemExit:
         pass
