@@ -41,20 +41,20 @@ def dispatch(plugin, fields):
     try:
         if not plugin.VerifyFields(fields):
             raise Failed('Invalid Fields')
-    except (AttributeError, TypeError):
+    except (NotImplementedError, TypeError):
         raise Failed("'VerifyFields' function not defined")
 
     try:
         if not plugin.VerifyCredentials():
             try:
                 plugin.Authorize()
-            except (AttributeError, TypeError):
+            except (NotImplementedError, TypeError):
                 raise Failed("'Authorize' function not defined")
             except (AuthorizationError, NetworkError), e:
                 raise Failed(e.message)
             except KeyboardInterrupt:
                 raise Failed(' Operation Aborted')
-    except (AttributeError, TypeError):
+    except (NotImplementedError, TypeError):
         raise Failed("'VerifyCredentials' function not defined")
     except NetworkError, e:
         raise Failed(e.message)
@@ -66,7 +66,7 @@ def dispatch(plugin, fields):
             req_fields[field] = fields[field]
     try:
         plugin.SendMsg(req_fields)
-    except (AttributeError, TypeError):
+    except (NotImplementedError, TypeError):
         raise Failed("'SendMsg' function not defined")
     except NetworkError, e:
         raise Failed(e.message)
