@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'Publish',
-    version = '1.2.0',
+    name = 'python-publish',
+    version = '1.0.0',
     author = 'Alfred Dominic, Shahul Hameed',
     author_email = 'alfie.2012@gmail.com',
     packages = find_packages(exclude=[]),
@@ -17,8 +17,6 @@ setup(
         "facebook-sdk==0.4.0",
         "mechanize==0.2.5",
         "Pillow==2.5.3",
-        "py==1.4.23",
-        "six==1.7.3",
         "termcolor==1.1.0",
         "tweepy==2.3.0",
         "wsgiref==0.1.2",
