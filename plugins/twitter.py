@@ -221,14 +221,21 @@ class Twitter(Channel):
             self.api.update_status(Message)
             return True
         except tweepy.error.TweepError, e:
-            Image = self.Text2Img(Message)
+            dup_msg = False
             try:
-                self.api.update_with_media(Image)
-                unlink(Image)
-                return True
-            except tweepy.error.TweepError:
-                unlink(Image)
-                return False
+                if e.message[0]['code'] == 187:
+                    raise Failed('Duplicate Message')
+            except AttributeError:
+                pass
+            if not dup_msg:
+                Image = self.Text2Img(Message)
+                try:
+                    self.api.update_with_media(Image)
+                    unlink(Image)
+                    return True
+                except tweepy.error.TweepError:
+                    unlink(Image)
+                    return False
 
     def VerifyFields(self, msg):
         '''
