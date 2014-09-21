@@ -1,3 +1,4 @@
+import pytest
 import argparse
 import tempfile
 import os
@@ -5,6 +6,7 @@ import mock_engine
 import tempfile
 from ..modules import ui
 from configobj import ConfigObj
+from ..modules.exception import Failed
 
 ui.get_plugins = mock_engine.get_plugins
 ui.raw_input = mock_engine.raw_input
@@ -70,5 +72,17 @@ def test_list():
 def test_reset_plugin():
     try:
         ui.main(['--reset'])
+    except SystemExit:
+        pass
+
+def test_list_uninstall():
+    try:
+        ui.main(['--list','--uninstall'])
+    except SystemExit:
+        pass
+
+def test_list_install():
+    try:
+        ui.main(['--list','--install','path'])
     except SystemExit:
         pass

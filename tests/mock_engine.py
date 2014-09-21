@@ -1,8 +1,6 @@
-import importlib
-import glob
-from os.path import basename, splitext
 import plugins.twitter as t
 import plugins.facebook as fb
+from ..modules.exception import Failed
 
 PLUGINS_DIR = "./plugins"
 
@@ -23,7 +21,3 @@ def getpass(msg):
 
 def remove(path):
     pass
-
-class Failed(Exception):
-    pass
-
