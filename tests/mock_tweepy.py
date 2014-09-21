@@ -34,7 +34,7 @@ class API(tweepy.OAuthHandler):
 
    def update_status(self, msg):
       if len(msg) > 25:
-         raise error.TweepError
+         raise error.TweepError([{u'message': u'Too Long.', u'code': 185}])
 
    def update_with_media(self, msg):
       pass
