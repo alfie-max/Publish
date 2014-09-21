@@ -8,7 +8,7 @@ class GraphAPI(object):
         return True
 
     def put_wall_post(self, msg):
-        if msg == None:
+        if msg == 'None':
             return True
         if msg == 'error':
             raise GraphAPIError('error')

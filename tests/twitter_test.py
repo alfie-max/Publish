@@ -30,11 +30,8 @@ def test_SendMsg():
     T.SendMsg({'Message':'Test Message'})
 
 def test_SendMsg_as_img():
-    try:
-        T.SendMsg({'Message':"""This is a long message to test sending as image.
-        Make this long and long and long..... yes its really long"""})
-    except Exception:
-        pass
+    T.SendMsg({'Message':"""This is a long message to test sending as image.
+    Make this long and long and long..... yes its really long"""})
 
 def test_reset():
     T.Reset()
