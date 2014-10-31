@@ -7,6 +7,14 @@ How it works?
 --------------
 It has a powerful command line based User-Interface which takes in the user input which is basically the message to be posted and the various networks to which the content should be posted. The user input is then validated to see if there’s any error or the formatting is correct. After that, the message will be posted in the specified social networks and a success message is displayed to the user.
 
+Installation
+------------
+
+ - Linux, Mac and Windows
+
+		python -m pip install python-publish
+
+
 Developers
 -------------
 
