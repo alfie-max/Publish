@@ -16,7 +16,7 @@ setup(
         "configobj==5.0.5",
         "facebook-sdk==0.4.0",
         "mechanize==0.2.5",
-        "Pillow==2.5.3",
+        "Pillow==6.2.0",
         "termcolor==1.1.0",
         "tweepy==2.3.0",
         "wsgiref==0.1.2",
